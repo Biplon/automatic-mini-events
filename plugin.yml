@@ -1,0 +1,6 @@
+name: ame
+author: Vestri
+description: ame
+version: 0.1
+api-version: 1.15
+main: main.java.AME
