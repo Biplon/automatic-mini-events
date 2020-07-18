@@ -1,12 +1,14 @@
 package main.java.ameevent;
 
+import main.java.lang.LanguageManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -22,11 +24,15 @@ public class AMEEvent
 
     public EventTyp type;
 
+    public double time;
+
     private Block[] countblock;
 
     private EntityType[] countentity;
 
-    private HashMap<UUID, Integer> count = new HashMap<>();
+    public HashMap<Player, Integer> count = new HashMap<>();
+
+    private ItemStack[] rewards = new ItemStack[5];
 
     public AMEEvent(String path)
     {
@@ -37,6 +43,7 @@ public class AMEEvent
             name = cfg.getString("general.name");
             desc = cfg.getString("general.desc").split("/n");
             type = EventTyp.valueOf(cfg.getString("general.typ"));
+            time = cfg.getDouble("general.time");
             List<EntityType> types = new ArrayList<>();
             if (type == EventTyp.killenemy)
             {
@@ -55,11 +62,35 @@ public class AMEEvent
                 }
                 countentity = (EntityType[]) types.toArray();
             }
-
+            createRewards();
         }
         catch (Exception ex)
         {
             Bukkit.getLogger().warning(ex.getMessage());
         }
     }
+
+    public void createRewards()
+    {
+        String place = "";
+        for (int i = 0; i < 5; i++)
+        {
+
+            if (i < 3)
+            {
+                place = "#"+i;
+            }
+            else if (i == 3)
+            {
+                place = "#4-10";
+            }
+            else
+            {
+                place = "#>10";
+            }
+            rewards[i] = AMEEventManager.createItem(Material.PAPER, LanguageManager.getInstance().rewardBagName,name,place);
+        }
+    }
+
+
 }

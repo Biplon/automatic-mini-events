@@ -1,6 +1,7 @@
 package main.java.config;
 
 import main.java.AME;
+import main.java.Reward.AMERewardManager;
 import main.java.ameevent.AMEEvent;
 
 import java.io.File;
@@ -19,6 +20,7 @@ public class EventConfigLoader
         if (!folder.exists())
         {
             folder.mkdir();
+
         }
 
         List<String> result = new ArrayList<>();
@@ -27,14 +29,15 @@ public class EventConfigLoader
 
         for (String s : result)
         {
-            e.add(new AMEEvent());
+            AMEEvent event = new AMEEvent(s);
+            e.add(event);
         }
 
 
         return (AMEEvent[]) e.toArray();
     }
 
-    private static void search(final String pattern, final File folder, List<String> result)
+    public static void search(final String pattern, final File folder, List<String> result)
     {
         try
         {
