@@ -1,6 +1,6 @@
-package main.java.config;
+package ame.java.config;
 
-import main.java.AME;
+import ame.java.AME;
 
 import java.io.File;
 

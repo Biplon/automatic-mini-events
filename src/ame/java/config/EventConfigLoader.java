@@ -1,8 +1,7 @@
-package main.java.config;
+package ame.java.config;
 
-import main.java.AME;
-import main.java.Reward.AMERewardManager;
-import main.java.ameevent.AMEEvent;
+import ame.java.AME;
+import ame.java.ameevent.AMEEvent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,7 +33,7 @@ public class EventConfigLoader
         }
 
 
-        return (AMEEvent[]) e.toArray();
+        return e.toArray(new AMEEvent[0]);
     }
 
     public static void search(final String pattern, final File folder, List<String> result)

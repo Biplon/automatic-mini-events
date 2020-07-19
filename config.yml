@@ -1,5 +1,9 @@
 general:
   #language
   lang: en_us
+  #min time in min between events
+  mintime: 40
+  #max time in min between events
+  maxtime: 80
 
 

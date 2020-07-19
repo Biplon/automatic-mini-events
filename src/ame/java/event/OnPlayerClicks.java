@@ -1,7 +1,7 @@
-package main.java.event;
+package ame.java.event;
 
-import main.java.Reward.AMERewardManager;
-import main.java.lang.LanguageManager;
+import ame.java.Reward.AMERewardManager;
+import ame.java.lang.LanguageManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,6 +25,7 @@ public class OnPlayerClicks implements Listener
                 if (AMERewardManager.getInstance().getPlayerReward(player,event.getItem()))
                 {
                     player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-1);
+                    event.setCancelled(true);
                 }
             }
         }
