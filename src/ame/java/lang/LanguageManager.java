@@ -1,7 +1,6 @@
-package main.java.lang;
+package ame.java.lang;
 
-import main.java.AME;
-import main.java.config.ConfigManager;
+import ame.java.AME;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -27,6 +26,12 @@ public class LanguageManager
 
     public String eventduration;
 
+    public String progresstext;
+
+    public String eventendtext;
+
+    public String eventminleft;
+
     public void loadLang()
     {
         File configFile = new File("plugins" + File.separator + AME.getInstance().getName() + File.separator + AME.getInstance().getConfig().getString("general.lang") + ".yml");
@@ -34,5 +39,8 @@ public class LanguageManager
         rewardBagName = cfg.getString("rewardBagName") != null ? cfg.getString("rewardBagName") : "Reward bag";
         starttext  = cfg.getString("starttext") != null ? cfg.getString("starttext") : "started!";
         eventduration = cfg.getString("eventduration") != null ? cfg.getString("eventduration") : "Event duration:";
+        progresstext = cfg.getString("progresstext") != null ? cfg.getString("progresstext") : "Score:";
+        eventendtext = cfg.getString("eventendtext") != null ? cfg.getString("eventendtext") : "is finished!";
+        eventminleft = cfg.getString("eventminleft") != null ? cfg.getString("eventminleft") : "Event ends in:";
     }
 }

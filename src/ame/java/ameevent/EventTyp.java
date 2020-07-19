@@ -1,4 +1,4 @@
-package main.java.ameevent;
+package ame.java.ameevent;
 
 public enum EventTyp
 {
