@@ -1,6 +1,6 @@
-package main.java.ameevent;
+package ame.java.ameevent;
 
-import main.java.lang.LanguageManager;
+import ame.java.lang.LanguageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,10 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class AMEEvent
 {
@@ -28,11 +25,11 @@ public class AMEEvent
 
     private Block[] countblock;
 
-    private EntityType[] countentity;
+    public List<EntityType> countentity = new ArrayList<>();
 
     public HashMap<Player, Integer> count = new HashMap<>();
 
-    private ItemStack[] rewards = new ItemStack[5];
+    public ItemStack[] rewards = new ItemStack[5];
 
     public AMEEvent(String path)
     {
@@ -44,23 +41,22 @@ public class AMEEvent
             desc = cfg.getString("general.desc").split("/n");
             type = EventTyp.valueOf(cfg.getString("general.typ"));
             time = cfg.getDouble("general.time");
-            List<EntityType> types = new ArrayList<>();
             if (type == EventTyp.killenemy)
             {
                 boolean isnext = true;
                 int counter = 0;
                 while (isnext)
                 {
-                    if (cfg.getString("counter." + counter) != null)
+                    if (cfg.getString("counter." + counter +".name") != null)
                     {
-                       types.add(EntityType.valueOf(cfg.getString("counter.name")));
+                        countentity.add(EntityType.valueOf(cfg.getString("counter."+counter+".name")));
+                        counter++;
                     }
                     else
                     {
                         isnext = false;
                     }
                 }
-                countentity = (EntityType[]) types.toArray();
             }
             createRewards();
         }
@@ -78,7 +74,7 @@ public class AMEEvent
 
             if (i < 3)
             {
-                place = "#"+i;
+                place = "#"+(i+1);
             }
             else if (i == 3)
             {
@@ -92,5 +88,32 @@ public class AMEEvent
         }
     }
 
+    public void getPlayerRewards(HashMap<Player,Integer> player)
+    {
+        Object[] p = player.keySet().toArray();
+        for (int i = 0; i < p.length; i++)
+        {
+            if (i == 0)
+            {
+                ((Player)p[i]).getInventory().addItem(rewards[i]);
+            }
+            else if(i == 1)
+            {
+                ((Player)p[i]).getInventory().addItem(rewards[i]);
+            }
+            else if(i == 2)
+            {
+                ((Player)p[i]).getInventory().addItem(rewards[i]);
+            }
+            else if(i < 10)
+            {
+                ((Player)p[i]).getInventory().addItem(rewards[3]);
+            }
+            else
+            {
+                ((Player)p[i]).getInventory().addItem(rewards[4]);
+            }
 
+        }
+    }
 }

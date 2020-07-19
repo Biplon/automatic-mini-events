@@ -1,13 +1,13 @@
-package main.java;
+package ame.java;
 
-import main.java.Reward.AMERewardManager;
-import main.java.command.CommandReloadEvent;
-import main.java.command.CommandStartEvent;
-import main.java.config.ConfigManager;
-import main.java.ameevent.AMEEventManager;
-import main.java.event.OnEntityDeath;
-import main.java.event.OnPlayerClicks;
-import main.java.lang.LanguageManager;
+import ame.java.Reward.AMERewardManager;
+import ame.java.event.OnEntityDeath;
+import ame.java.command.CommandReloadEvent;
+import ame.java.command.CommandStartEvent;
+import ame.java.config.ConfigManager;
+import ame.java.ameevent.AMEEventManager;
+import ame.java.event.OnPlayerClicks;
+import ame.java.lang.LanguageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
@@ -22,15 +22,10 @@ public class AME extends JavaPlugin
         instance = this;
         new ConfigManager();
         new LanguageManager();
-        try
-        {
-            ConfigManager.loadConfig();
-            LanguageManager.getInstance().loadLang();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+
+        ConfigManager.loadConfig();
+        LanguageManager.getInstance().loadLang();
+
         Bukkit.getLogger().info("[AME] register commands!");
         regCommands();
         Bukkit.getLogger().info("[AME] commands registered!");
@@ -42,6 +37,7 @@ public class AME extends JavaPlugin
         Bukkit.getLogger().info("[AME] events loaded!");
         regEvents();
         Bukkit.getLogger().info("[AME] has been enabled!");
+        AMEEventManager.getInstance().startTimer();
     }
 
     private void regCommands()

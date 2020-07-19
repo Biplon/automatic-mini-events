@@ -1,6 +1,6 @@
-package main.java.command;
+package ame.java.command;
 
-import main.java.ameevent.AMEEventManager;
+import ame.java.ameevent.AMEEventManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,6 +28,7 @@ public class CommandStartEvent implements CommandExecutor
                 {
                     AMEEventManager.getInstance().startEvent();
                 }
+                return true;
             }
         }
         return false;

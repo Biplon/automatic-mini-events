@@ -1,4 +1,4 @@
-package main.java.Reward;
+package ame.java.Reward;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,7 +22,7 @@ public class AMEReward
     {
         File f = new File(path);
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(f);
-        name = cfg.getName();
+        name = cfg.getString("event.name");
         boolean isnext = true;
         int count = 0;
         while (isnext)

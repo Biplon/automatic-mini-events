@@ -1,11 +1,8 @@
-package main.java.Reward;
+package ame.java.Reward;
 
-import main.java.AME;
-import main.java.ameevent.AMEEvent;
-import main.java.config.ConfigManager;
-import main.java.config.EventConfigLoader;
+import ame.java.AME;
+import ame.java.config.EventConfigLoader;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -66,6 +63,7 @@ public class AMERewardManager
                     {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
                     }
+                    return true;
                 }
                 else if (name.equals("2"))
                 {
@@ -73,6 +71,7 @@ public class AMERewardManager
                     {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
                     }
+                    return true;
                 }
                 else if (name.equals("3"))
                 {
@@ -80,6 +79,7 @@ public class AMERewardManager
                     {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
                     }
+                    return true;
                 }
                 else if (name.equals("4-10"))
                 {
@@ -87,6 +87,7 @@ public class AMERewardManager
                     {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
                     }
+                    return true;
                 }
                 else if (name.equals(">10"))
                 {
@@ -94,6 +95,7 @@ public class AMERewardManager
                     {
                         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
                     }
+                    return true;
                 }
             }
         }
