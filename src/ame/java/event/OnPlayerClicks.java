@@ -2,6 +2,7 @@ package ame.java.event;
 
 import ame.java.Reward.AMERewardManager;
 import ame.java.lang.LanguageManager;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,18 +18,19 @@ public class OnPlayerClicks implements Listener
     {
         Player player = event.getPlayer();
         Action action = event.getAction();
-
-        if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
+        if (player.getInventory().getItemInMainHand().getType() == Material.AIR)
         {
-            if (Objects.requireNonNull(player.getInventory().getItemInMainHand().getItemMeta()).getDisplayName().equals(LanguageManager.getInstance().rewardBagName))
+            if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
             {
-                if (AMERewardManager.getInstance().getPlayerReward(player,event.getItem()))
+                if (Objects.requireNonNull(player.getInventory().getItemInMainHand().getItemMeta()).getDisplayName().equals(LanguageManager.getInstance().rewardBagName))
                 {
-                    player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount()-1);
-                    event.setCancelled(true);
+                    if (AMERewardManager.getInstance().getPlayerReward(player, event.getItem()))
+                    {
+                        player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
+                        event.setCancelled(true);
+                    }
                 }
             }
         }
-
     }
 }
