@@ -1,11 +1,13 @@
 package ame.java;
 
 import ame.java.Reward.AMERewardManager;
+import ame.java.event.OnBlockDrop;
 import ame.java.event.OnEntityDeath;
 import ame.java.command.CommandReloadEvent;
 import ame.java.command.CommandStartEvent;
 import ame.java.config.ConfigManager;
 import ame.java.ameevent.AMEEventManager;
+import ame.java.event.OnFishEvent;
 import ame.java.event.OnPlayerClicks;
 import ame.java.lang.LanguageManager;
 import org.bukkit.Bukkit;
@@ -37,7 +39,10 @@ public class AME extends JavaPlugin
         Bukkit.getLogger().info("[AME] events loaded!");
         regEvents();
         Bukkit.getLogger().info("[AME] has been enabled!");
-        AMEEventManager.getInstance().startTimer();
+        if (getConfig().getBoolean("general.active"))
+        {
+            AMEEventManager.getInstance().startTimer();
+        }
     }
 
     private void regCommands()
@@ -51,6 +56,8 @@ public class AME extends JavaPlugin
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new OnEntityDeath(), this);
         pm.registerEvents(new OnPlayerClicks(), this);
+        pm.registerEvents(new OnBlockDrop(), this);
+        pm.registerEvents(new OnFishEvent(), this);
     }
 
     @Override

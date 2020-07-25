@@ -20,9 +20,14 @@ public class CommandStartEvent implements CommandExecutor
             }
             else
             {
-                if (args.length == 1)
+                if (args.length > 0)
                 {
-                    AMEEventManager.getInstance().startEvent(args[0]);
+                    StringBuilder value = new StringBuilder();
+                    for (String v: args)
+                    {
+                        value.append(v);
+                    }
+                    AMEEventManager.getInstance().startEvent(value.toString());
                 }
                 else
                 {

@@ -18,7 +18,7 @@ public class OnPlayerClicks implements Listener
     {
         Player player = event.getPlayer();
         Action action = event.getAction();
-        if (player.getInventory().getItemInMainHand().getType() == Material.AIR)
+        if (player.getInventory().getItemInMainHand().getType() != Material.AIR)
         {
             if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
             {

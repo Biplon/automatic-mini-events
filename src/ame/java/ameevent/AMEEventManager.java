@@ -5,8 +5,10 @@ import ame.java.config.EventConfigLoader;
 import ame.java.lang.LanguageManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_15_R1.DoubleBlockFinder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +19,7 @@ import java.util.*;
 
 public class AMEEventManager
 {
-    private AMEEvent[] aMEEvents;
+    public AMEEvent[] aMEEvents;
 
     private AMEEvent activeEvent;
 
@@ -42,6 +44,11 @@ public class AMEEventManager
     private int mintime = 40;
     private int maxtime = 80;
 
+    private int eventsstart = 0;
+    private int eventends = 0;
+
+    private boolean eventsperi;
+
     private DecimalFormat df = new DecimalFormat("#.##");
 
     public void initEvents()
@@ -49,6 +56,9 @@ public class AMEEventManager
         aMEEvents = EventConfigLoader.loadEvents();
         mintime = AME.getInstance().getConfig().getInt("general.mintime");
         maxtime = AME.getInstance().getConfig().getInt("general.maxtime");
+        eventsstart = AME.getInstance().getConfig().getInt("general.eventsstart");
+        eventends = AME.getInstance().getConfig().getInt("general.eventsend");
+        eventsperi = AME.getInstance().getConfig().getBoolean("general.period");
     }
 
     public static ItemStack createItem(final Material material, final String name, final String... lore)
@@ -59,7 +69,6 @@ public class AMEEventManager
         assert meta != null;
         meta.setDisplayName(name);
         meta.setLore(Arrays.asList(lore));
-
         item.setItemMeta(meta);
 
         return item;
@@ -67,11 +76,65 @@ public class AMEEventManager
 
     public void startEvent()
     {
-        if (!eventactive)
+        if (!eventactive && aMEEvents.length > 0)
         {
+            EventStartTyp time = isDay();
+            boolean eventfind = false;
             Random generator = new Random();
-            int randomNumber = generator.nextInt(aMEEvents.length);
-            start(aMEEvents[randomNumber]);
+            int randomNumber = 0;
+            if (eventsperi)
+            {
+                Date date = new Date();
+                Calendar calendar = GregorianCalendar.getInstance();
+                calendar.setTime(date);
+                if (calendar.get(Calendar.HOUR_OF_DAY) >= eventsstart && calendar.get(Calendar.HOUR_OF_DAY)<=eventends)
+                {
+
+                    while (!eventfind)
+                    {
+                        randomNumber = generator.nextInt(aMEEvents.length);
+
+                        if (aMEEvents[randomNumber].startTyp == time || aMEEvents[randomNumber].startTyp == EventStartTyp.all)
+                        {
+                            start(aMEEvents[randomNumber]);
+                            eventfind = true;
+                        }
+                    }
+
+                }
+                else
+                {
+                    Bukkit.getScheduler().cancelTask(autoeventtask);
+                    startTimer();
+                }
+            }
+            else
+            {
+                while (!eventfind)
+                {
+                    randomNumber = generator.nextInt(aMEEvents.length);
+
+                    if (aMEEvents[randomNumber].startTyp == time || aMEEvents[randomNumber].startTyp == EventStartTyp.all)
+                    {
+                        start(aMEEvents[randomNumber]);
+                        eventfind = true;
+                    }
+                }
+            }
+        }
+    }
+
+    public EventStartTyp isDay()
+    {
+
+        long time = Bukkit.getWorlds().get(0).getTime();
+        if (time < 12300)
+        {
+            return EventStartTyp.day;
+        }
+        else
+        {
+            return EventStartTyp.night;
         }
     }
 
@@ -88,7 +151,6 @@ public class AMEEventManager
                 }
             }
         }
-
     }
 
     private void start(AMEEvent e)
@@ -96,10 +158,16 @@ public class AMEEventManager
         eventactive = true;
         activeEvent = e;
         Bukkit.getScheduler().cancelTask(autoeventtask);
-        Bukkit.broadcastMessage(e.name + LanguageManager.getInstance().starttext);
+        Bukkit.broadcastMessage(e.name + " " + LanguageManager.getInstance().starttext);
         for (String msg : e.desc)
         {
-            Bukkit.broadcastMessage(msg);
+            for (Player p : Bukkit.getOnlinePlayers())
+            {
+                if (p.isOnline())
+                {
+                    p.sendMessage(msg);
+                }
+            }
         }
         Bukkit.broadcastMessage(LanguageManager.getInstance().eventduration + " " + e.time);
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), () -> stopEvent(), (long) ((e.time * 60) * 20));
@@ -109,7 +177,13 @@ public class AMEEventManager
             public void run()
             {
                 String formatted = df.format(((e.time) / 3) * timerrepeatleft);
-                Bukkit.broadcastMessage(LanguageManager.getInstance().eventminleft + " " + formatted + " min!");
+                for (Player p : Bukkit.getOnlinePlayers())
+                {
+                    if (p.isOnline())
+                    {
+                        p.sendMessage(LanguageManager.getInstance().eventminleft + " " + formatted + " min!");
+                    }
+                }
                 timerrepeatleft--;
             }
         }, 0L, (long) ((e.time * 60) * 20) / 3);
@@ -119,8 +193,9 @@ public class AMEEventManager
     {
         Bukkit.getScheduler().cancelTask(timertask);
         timerrepeatleft = 3;
-        Bukkit.broadcastMessage(activeEvent.name + " " + LanguageManager.getInstance().eventendtext);
         activeEvent.getPlayerRewards(sortByValues(activeEvent.count));
+        Bukkit.broadcastMessage(activeEvent.name + " " + LanguageManager.getInstance().eventendtext);
+        activeEvent.count.clear();
         eventactive = false;
         activeEvent = null;
         startTimer();
@@ -147,7 +222,7 @@ public class AMEEventManager
         return sortedHashMap;
     }
 
-    public void addCount(Player p, EntityType typ, int value)
+    public void addCountKillEvent(Player p, EntityType typ, int value)
     {
         if (activeEvent.countentity.contains(typ))
         {
@@ -161,6 +236,40 @@ public class AMEEventManager
             }
             p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(LanguageManager.getInstance().progresstext + " " + activeEvent.count.get(p)));
         }
+    }
+
+    public void addCountHarvestEvent(Player p, Material typ, int value)
+    {
+        if (activeEvent.countblock.contains(typ))
+        {
+            if (activeEvent.count.containsKey(p))
+            {
+                activeEvent.count.put(p, activeEvent.count.get(p) + value);
+            }
+            else
+            {
+                activeEvent.count.put(p, value);
+            }
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(LanguageManager.getInstance().progresstext + " " + activeEvent.count.get(p)));
+        }
+    }
+
+    public void addCountFishEvent(Player p, int value)
+    {
+        if (activeEvent.count.containsKey(p))
+        {
+            activeEvent.count.put(p, activeEvent.count.get(p) + value);
+        }
+        else
+        {
+            activeEvent.count.put(p, value);
+        }
+        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(LanguageManager.getInstance().progresstext + " " + activeEvent.count.get(p)));
+    }
+
+    public EventTyp getEventType()
+    {
+        return activeEvent.type;
     }
 
     public void startTimer()

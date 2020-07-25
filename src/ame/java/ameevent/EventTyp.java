@@ -2,5 +2,7 @@ package ame.java.ameevent;
 
 public enum EventTyp
 {
-    killenemy
+    killenemy,
+    harvest,
+    fishing
 }

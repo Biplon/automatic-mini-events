@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +24,9 @@ public class AMEEvent
 
     public double time;
 
-    private Block[] countblock;
+    public EventStartTyp startTyp;
+
+    public  List<Material> countblock = new ArrayList<>();
 
     public List<EntityType> countentity = new ArrayList<>();
 
@@ -41,15 +44,16 @@ public class AMEEvent
             desc = cfg.getString("general.desc").split("/n");
             type = EventTyp.valueOf(cfg.getString("general.typ"));
             time = cfg.getDouble("general.time");
+            startTyp = EventStartTyp.valueOf(cfg.getString("general.starttyp"));
             if (type == EventTyp.killenemy)
             {
                 boolean isnext = true;
                 int counter = 0;
                 while (isnext)
                 {
-                    if (cfg.getString("counter." + counter +".name") != null)
+                    if (cfg.getString("counter." + counter + ".name") != null)
                     {
-                        countentity.add(EntityType.valueOf(cfg.getString("counter."+counter+".name")));
+                        countentity.add(EntityType.valueOf(cfg.getString("counter." + counter + ".name")));
                         counter++;
                     }
                     else
@@ -57,6 +61,27 @@ public class AMEEvent
                         isnext = false;
                     }
                 }
+            }
+            else if (type == EventTyp.harvest)
+            {
+                boolean isnext = true;
+                int counter = 0;
+                while (isnext)
+                {
+                    if (cfg.getString("counter." + counter + ".name") != null)
+                    {
+                        countblock.add(Material.valueOf(cfg.getString("counter." + counter + ".name")));
+                        counter++;
+                    }
+                    else
+                    {
+                        isnext = false;
+                    }
+                }
+            }
+            else if (type == EventTyp.fishing)
+            {
+
             }
             createRewards();
         }
@@ -74,7 +99,7 @@ public class AMEEvent
 
             if (i < 3)
             {
-                place = "#"+(i+1);
+                place = "#" + (i + 1);
             }
             else if (i == 3)
             {
@@ -84,36 +109,50 @@ public class AMEEvent
             {
                 place = "#>10";
             }
-            rewards[i] = AMEEventManager.createItem(Material.PAPER, LanguageManager.getInstance().rewardBagName,name,place);
+            rewards[i] = AMEEventManager.createItem(Material.PAPER, LanguageManager.getInstance().rewardBagName, name, place);
         }
     }
 
-    public void getPlayerRewards(HashMap<Player,Integer> player)
+    public void getPlayerRewards(HashMap<Player, Integer> player)
     {
+
+
+        Map<Integer, ItemStack> map = null;
         Object[] p = player.keySet().toArray();
         for (int i = 0; i < p.length; i++)
         {
+
             if (i == 0)
             {
-                ((Player)p[i]).getInventory().addItem(rewards[i]);
+                map = ((Player) p[i]).getInventory().addItem(rewards[i]);
+                Bukkit.broadcastMessage(LanguageManager.getInstance().eventwinneris+ " " +  ((Player) p[i]).getName());
             }
-            else if(i == 1)
+            else if (i == 1)
             {
-                ((Player)p[i]).getInventory().addItem(rewards[i]);
+                map = ((Player) p[i]).getInventory().addItem(rewards[i]);
             }
-            else if(i == 2)
+            else if (i == 2)
             {
-                ((Player)p[i]).getInventory().addItem(rewards[i]);
+                map = ((Player) p[i]).getInventory().addItem(rewards[i]);
             }
-            else if(i < 10)
+            else if (i < 10)
             {
-                ((Player)p[i]).getInventory().addItem(rewards[3]);
+                map = ((Player) p[i]).getInventory().addItem(rewards[3]);
             }
             else
             {
-                ((Player)p[i]).getInventory().addItem(rewards[4]);
+                map = ((Player) p[i]).getInventory().addItem(rewards[4]);
             }
-
+            ((Player) p[i]).sendMessage(LanguageManager.getInstance().eventgetplacetext+ " "+ (i +1));
+            ((Player) p[i]).sendMessage(LanguageManager.getInstance().eventgetrewardtext+ " "+ LanguageManager.getInstance().rewardBagName);
+            if (map.size() == 1)
+            {
+                for (final ItemStack item : map.values())
+                {
+                    ((Player) p[i]).getWorld().dropItemNaturally(((Player) p[i]).getLocation(), item);
+                }
+                map.clear();
+            }
         }
     }
 }
