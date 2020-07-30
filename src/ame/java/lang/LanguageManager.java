@@ -37,6 +37,8 @@ public class LanguageManager
     public String eventgetplacetext;
 
     public String eventwinneris;
+    public String eventwinner2is;
+    public String eventwinner3is;
 
     public void loadLang()
     {
@@ -50,6 +52,8 @@ public class LanguageManager
         eventminleft = cfg.getString("eventminleft") != null ? cfg.getString("eventminleft") : "Event ends in:";
         eventgetrewardtext = cfg.getString("eventgetrewardtext") != null ? cfg.getString("eventgetrewardtext") : "Your reward is:";
         eventgetplacetext = cfg.getString("eventgetplacetext") != null ? cfg.getString("eventgetplacetext") : "Your rank in the event was:";
-        eventwinneris = cfg.getString("eventwinneris") != null ? cfg.getString("eventwinneris") : "Winner is:";
+        eventwinneris = cfg.getString("eventwinneris") != null ? cfg.getString("eventwinneris") : "1st place is:";
+        eventwinner2is = cfg.getString("eventwinner2is") != null ? cfg.getString("eventwinner2is") : "2nd place is:";
+        eventwinner3is = cfg.getString("eventwinner3is") != null ? cfg.getString("eventwinner3is") : "3rd place is:";
     }
 }

@@ -49,7 +49,7 @@ public class AMEEventManager
 
     private boolean eventsperi;
 
-    private DecimalFormat df = new DecimalFormat("#.##");
+    private final DecimalFormat df = new DecimalFormat("#.##");
 
     public void initEvents()
     {
@@ -158,7 +158,7 @@ public class AMEEventManager
         eventactive = true;
         activeEvent = e;
         Bukkit.getScheduler().cancelTask(autoeventtask);
-        Bukkit.broadcastMessage(e.name + " " + LanguageManager.getInstance().starttext);
+        Bukkit.broadcastMessage("§6"+e.name + " " + LanguageManager.getInstance().starttext);
         for (String msg : e.desc)
         {
             for (Player p : Bukkit.getOnlinePlayers())
@@ -169,7 +169,7 @@ public class AMEEventManager
                 }
             }
         }
-        Bukkit.broadcastMessage(LanguageManager.getInstance().eventduration + " " + e.time);
+        Bukkit.broadcastMessage(LanguageManager.getInstance().eventduration + " §6" + e.time);
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), () -> stopEvent(), (long) ((e.time * 60) * 20));
         timertask = Bukkit.getScheduler().scheduleSyncRepeatingTask(AME.getInstance(), new Runnable()
         {
@@ -181,7 +181,7 @@ public class AMEEventManager
                 {
                     if (p.isOnline())
                     {
-                        p.sendMessage(LanguageManager.getInstance().eventminleft + " " + formatted + " min!");
+                        p.sendMessage(LanguageManager.getInstance().eventminleft + " §6" + formatted + " min!");
                     }
                 }
                 timerrepeatleft--;
@@ -194,7 +194,7 @@ public class AMEEventManager
         Bukkit.getScheduler().cancelTask(timertask);
         timerrepeatleft = 3;
         activeEvent.getPlayerRewards(sortByValues(activeEvent.count));
-        Bukkit.broadcastMessage(activeEvent.name + " " + LanguageManager.getInstance().eventendtext);
+        Bukkit.broadcastMessage("§6"+activeEvent.name + " " + LanguageManager.getInstance().eventendtext);
         activeEvent.count.clear();
         eventactive = false;
         activeEvent = null;
@@ -234,7 +234,7 @@ public class AMEEventManager
             {
                 activeEvent.count.put(p, value);
             }
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(LanguageManager.getInstance().progresstext + " " + activeEvent.count.get(p)));
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(LanguageManager.getInstance().progresstext + " §6" + activeEvent.count.get(p)));
         }
     }
 
@@ -250,7 +250,7 @@ public class AMEEventManager
             {
                 activeEvent.count.put(p, value);
             }
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(LanguageManager.getInstance().progresstext + " " + activeEvent.count.get(p)));
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(LanguageManager.getInstance().progresstext + " §6" + activeEvent.count.get(p)));
         }
     }
 
@@ -264,7 +264,7 @@ public class AMEEventManager
         {
             activeEvent.count.put(p, value);
         }
-        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(LanguageManager.getInstance().progresstext + " " + activeEvent.count.get(p)));
+        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(LanguageManager.getInstance().progresstext + " §6" + activeEvent.count.get(p)));
     }
 
     public EventTyp getEventType()

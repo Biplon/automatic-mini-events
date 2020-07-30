@@ -25,7 +25,15 @@ public class CommandReloadEvent implements CommandExecutor
             }
             else
             {
-
+                if (!AMEEventManager.getInstance().eventactive)
+                {
+                    AMEEventManager.getInstance().initEvents();
+                    player.sendMessage("Reloaded AME Events!");
+                }
+                else
+                {
+                    player.sendMessage("Cannot be reloaded when an event is running!");
+                }
             }
         }
         return false;

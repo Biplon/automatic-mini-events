@@ -41,7 +41,7 @@ public class AMEEvent
             File f = new File(path);
             FileConfiguration cfg = YamlConfiguration.loadConfiguration(f);
             name = cfg.getString("general.name");
-            desc = cfg.getString("general.desc").split("/n");
+            desc = Objects.requireNonNull(cfg.getString("general.desc")).split("/n");
             type = EventTyp.valueOf(cfg.getString("general.typ"));
             time = cfg.getDouble("general.time");
             startTyp = EventStartTyp.valueOf(cfg.getString("general.starttyp"));
@@ -125,15 +125,17 @@ public class AMEEvent
             if (i == 0)
             {
                 map = ((Player) p[i]).getInventory().addItem(rewards[i]);
-                Bukkit.broadcastMessage(LanguageManager.getInstance().eventwinneris+ " " +  ((Player) p[i]).getName());
+                Bukkit.broadcastMessage(LanguageManager.getInstance().eventwinneris+ " §6" +  ((Player) p[i]).getName());
             }
             else if (i == 1)
             {
                 map = ((Player) p[i]).getInventory().addItem(rewards[i]);
+                Bukkit.broadcastMessage(LanguageManager.getInstance().eventwinner2is+ " §6" +  ((Player) p[i]).getName());
             }
             else if (i == 2)
             {
                 map = ((Player) p[i]).getInventory().addItem(rewards[i]);
+                Bukkit.broadcastMessage(LanguageManager.getInstance().eventwinner3is+ " §6" +  ((Player) p[i]).getName());
             }
             else if (i < 10)
             {
@@ -143,8 +145,8 @@ public class AMEEvent
             {
                 map = ((Player) p[i]).getInventory().addItem(rewards[4]);
             }
-            ((Player) p[i]).sendMessage(LanguageManager.getInstance().eventgetplacetext+ " "+ (i +1));
-            ((Player) p[i]).sendMessage(LanguageManager.getInstance().eventgetrewardtext+ " "+ LanguageManager.getInstance().rewardBagName);
+            ((Player) p[i]).sendMessage(LanguageManager.getInstance().eventgetplacetext+ " §6"+ (i +1));
+            ((Player) p[i]).sendMessage(LanguageManager.getInstance().eventgetrewardtext+ " §6"+ LanguageManager.getInstance().rewardBagName);
             if (map.size() == 1)
             {
                 for (final ItemStack item : map.values())
