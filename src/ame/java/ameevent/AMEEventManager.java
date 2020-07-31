@@ -38,7 +38,7 @@ public class AMEEventManager
     }
 
     private int timertask;
-    private int timerrepeatleft = 3;
+    private int timerrepeatleft = 2;
 
     private int autoeventtask;
     private int mintime = 40;
@@ -179,7 +179,7 @@ public class AMEEventManager
                 }
             }
         }
-        Bukkit.broadcastMessage(LanguageManager.getInstance().eventduration + " §6" + e.time);
+        Bukkit.broadcastMessage(LanguageManager.getInstance().eventduration + " §6" + e.time +" min!");
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), () -> stopEvent(), (long) ((e.time * 60) * 20));
         timertask = Bukkit.getScheduler().scheduleSyncRepeatingTask(AME.getInstance(), new Runnable()
         {
@@ -196,13 +196,13 @@ public class AMEEventManager
                 }
                 timerrepeatleft--;
             }
-        }, 0L, (long) ((e.time * 60) * 20) / 3);
+        }, (long) ((e.time * 60) * 20) / 3, (long) ((e.time * 60) * 20) / 3);
     }
 
     public void stopEvent()
     {
         Bukkit.getScheduler().cancelTask(timertask);
-        timerrepeatleft = 3;
+        timerrepeatleft = 2;
         activeEvent.getPlayerRewards(sortByValues(activeEvent.count));
         Bukkit.broadcastMessage("§6" + activeEvent.name + " " + LanguageManager.getInstance().eventendtext);
         activeEvent.count.clear();
