@@ -1,9 +1,22 @@
 general:
   #language
   lang: en_us
+  #enable events
+  active: true
   #min time in min between events
-  mintime: 40
+  mintime: 60
   #max time in min between events
-  maxtime: 80
+  maxtime: 120
+  #Events in a certain period of time
+  period: false
+  #events start time (time between 0-23)
+  eventsstart: 8
+  #events end time
+  eventsend: 22
+  #events start only by x player online
+  eventminplayer: false
+  #players that must by online if eventminplayer true
+  eventminplayervalue: 20
+
 
 

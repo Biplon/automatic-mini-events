@@ -9,7 +9,6 @@ import java.util.List;
 
 public class AMEReward
 {
-
     public String name;
 
     public final List<String> rewardcommands1 = new ArrayList<>();

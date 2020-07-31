@@ -1,7 +1,7 @@
 name: AME
 author: Vestri
 description: ame
-version: 0.4
+version: 0.5
 api-version: 1.15
 main: ame.java.AME
 permissions:

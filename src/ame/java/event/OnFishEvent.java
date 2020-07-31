@@ -2,16 +2,14 @@ package ame.java.event;
 
 import ame.java.ameevent.AMEEventManager;
 import ame.java.ameevent.EventTyp;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 
 public class OnFishEvent implements Listener
 {
     @EventHandler
-    public void OnFishEvent(final PlayerFishEvent event)
+    public void onFishEvent(final PlayerFishEvent event)
     {
         if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH)
         {

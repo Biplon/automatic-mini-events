@@ -24,7 +24,7 @@ public class OnPlayerClicks implements Listener
             {
                 if (Objects.requireNonNull(player.getInventory().getItemInMainHand().getItemMeta()).getDisplayName().equals(LanguageManager.getInstance().rewardBagName))
                 {
-                    if (AMERewardManager.getInstance().getPlayerReward(player, event.getItem()))
+                    if (AMERewardManager.getInstance().getPlayerReward(player, Objects.requireNonNull(event.getItem())))
                     {
                         player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
                         event.setCancelled(true);

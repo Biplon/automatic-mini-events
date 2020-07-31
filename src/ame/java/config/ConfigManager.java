@@ -6,7 +6,6 @@ import java.io.File;
 
 public class ConfigManager
 {
-
     static ConfigManager instance;
 
     public ConfigManager()

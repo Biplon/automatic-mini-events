@@ -19,7 +19,6 @@ public class EventConfigLoader
         if (!folder.exists())
         {
             folder.mkdir();
-
         }
 
         List<String> result = new ArrayList<>();
@@ -31,7 +30,6 @@ public class EventConfigLoader
             AMEEvent event = new AMEEvent(s);
             e.add(event);
         }
-
 
         return e.toArray(new AMEEvent[0]);
     }
@@ -56,9 +54,8 @@ public class EventConfigLoader
                 }
             }
         }
-        catch (Exception e)
+        catch (Exception ignored)
         {
-
         }
     }
 }

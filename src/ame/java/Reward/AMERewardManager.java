@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AMERewardManager
 {
@@ -51,55 +52,47 @@ public class AMERewardManager
 
     public boolean getPlayerReward(Player p, ItemStack i)
     {
-        String name = i.getItemMeta().getLore().get(0);
+        String name = Objects.requireNonNull(Objects.requireNonNull(i.getItemMeta()).getLore()).get(0);
         for (AMEReward re: rewards)
         {
             if (re.name.equals(name))
             {
-                name = i.getItemMeta().getLore().get(1).replace("#","");
-                if (name.equals("1"))
+                name = Objects.requireNonNull(i.getItemMeta().getLore()).get(1).replace("#","");
+                switch (name)
                 {
-                    for (String co: re.rewardcommands1)
-                    {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
-                    }
-                    return true;
-                }
-                else if (name.equals("2"))
-                {
-                    for (String co: re.rewardcommands2)
-                    {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
-                    }
-                    return true;
-                }
-                else if (name.equals("3"))
-                {
-                    for (String co: re.rewardcommands3)
-                    {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
-                    }
-                    return true;
-                }
-                else if (name.equals("4-10"))
-                {
-                    for (String co: re.rewardcommands410)
-                    {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
-                    }
-                    return true;
-                }
-                else if (name.equals(">10"))
-                {
-                    for (String co: re.rewardcommands11)
-                    {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
-                    }
-                    return true;
+                    case "1":
+                        for (String co : re.rewardcommands1)
+                        {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
+                        }
+                        return true;
+                    case "2":
+                        for (String co : re.rewardcommands2)
+                        {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
+                        }
+                        return true;
+                    case "3":
+                        for (String co : re.rewardcommands3)
+                        {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
+                        }
+                        return true;
+                    case "4-10":
+                        for (String co : re.rewardcommands410)
+                        {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
+                        }
+                        return true;
+                    case ">10":
+                        for (String co : re.rewardcommands11)
+                        {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
+                        }
+                        return true;
                 }
             }
         }
-
         return false;
     }
 }

@@ -5,10 +5,8 @@ import ame.java.config.EventConfigLoader;
 import ame.java.lang.LanguageManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_15_R1.DoubleBlockFinder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,6 +20,8 @@ public class AMEEventManager
     public AMEEvent[] aMEEvents;
 
     private AMEEvent activeEvent;
+
+    private AMEEvent lastEvent;
 
     static AMEEventManager instance;
 
@@ -49,6 +49,10 @@ public class AMEEventManager
 
     private boolean eventsperi;
 
+    private boolean eventminplayer;
+
+    private int eventminplayervalue;
+
     private final DecimalFormat df = new DecimalFormat("#.##");
 
     public void initEvents()
@@ -59,6 +63,9 @@ public class AMEEventManager
         eventsstart = AME.getInstance().getConfig().getInt("general.eventsstart");
         eventends = AME.getInstance().getConfig().getInt("general.eventsend");
         eventsperi = AME.getInstance().getConfig().getBoolean("general.period");
+        eventminplayervalue = AME.getInstance().getConfig().getInt("general.eventminplayervalue");
+        eventminplayer = AME.getInstance().getConfig().getBoolean("general.eventminplayer");
+        lastEvent = aMEEvents[0];
     }
 
     public static ItemStack createItem(final Material material, final String name, final String... lore)
@@ -78,55 +85,58 @@ public class AMEEventManager
     {
         if (!eventactive && aMEEvents.length > 0)
         {
-            EventStartTyp time = isDay();
-            boolean eventfind = false;
-            Random generator = new Random();
-            int randomNumber = 0;
+            boolean eventCanStart = true;
+
             if (eventsperi)
             {
                 Date date = new Date();
                 Calendar calendar = GregorianCalendar.getInstance();
                 calendar.setTime(date);
-                if (calendar.get(Calendar.HOUR_OF_DAY) >= eventsstart && calendar.get(Calendar.HOUR_OF_DAY)<=eventends)
+                if (calendar.get(Calendar.HOUR_OF_DAY) < eventsstart && calendar.get(Calendar.HOUR_OF_DAY) > eventends)
                 {
-
-                    while (!eventfind)
-                    {
-                        randomNumber = generator.nextInt(aMEEvents.length);
-
-                        if (aMEEvents[randomNumber].startTyp == time || aMEEvents[randomNumber].startTyp == EventStartTyp.all)
-                        {
-                            start(aMEEvents[randomNumber]);
-                            eventfind = true;
-                        }
-                    }
-
+                    eventCanStart = false;
                 }
-                else
+            }
+
+            if (eventminplayer && eventCanStart)
+            {
+                if (Bukkit.getOnlinePlayers().size() < eventminplayervalue)
                 {
-                    Bukkit.getScheduler().cancelTask(autoeventtask);
-                    startTimer();
+                    eventCanStart = false;
                 }
+            }
+
+            if (eventCanStart)
+            {
+                start(findEvent());
             }
             else
             {
-                while (!eventfind)
-                {
-                    randomNumber = generator.nextInt(aMEEvents.length);
+                Bukkit.getScheduler().cancelTask(autoeventtask);
+                startTimer();
+            }
+        }
+    }
 
-                    if (aMEEvents[randomNumber].startTyp == time || aMEEvents[randomNumber].startTyp == EventStartTyp.all)
-                    {
-                        start(aMEEvents[randomNumber]);
-                        eventfind = true;
-                    }
-                }
+    private AMEEvent findEvent()
+    {
+        EventStartTyp time = isDay();
+        Random generator = new Random();
+        int randomNumber = 0;
+        while (true)
+        {
+            randomNumber = generator.nextInt(aMEEvents.length);
+
+            if ((aMEEvents[randomNumber].startTyp == time || aMEEvents[randomNumber].startTyp == EventStartTyp.all) && !aMEEvents[randomNumber].name.equals(lastEvent.name))
+            {
+                lastEvent = aMEEvents[randomNumber];
+                return aMEEvents[randomNumber];
             }
         }
     }
 
     public EventStartTyp isDay()
     {
-
         long time = Bukkit.getWorlds().get(0).getTime();
         if (time < 12300)
         {
@@ -158,7 +168,7 @@ public class AMEEventManager
         eventactive = true;
         activeEvent = e;
         Bukkit.getScheduler().cancelTask(autoeventtask);
-        Bukkit.broadcastMessage("§6"+e.name + " " + LanguageManager.getInstance().starttext);
+        Bukkit.broadcastMessage("§6" + e.name + " " + LanguageManager.getInstance().starttext);
         for (String msg : e.desc)
         {
             for (Player p : Bukkit.getOnlinePlayers())
@@ -194,7 +204,7 @@ public class AMEEventManager
         Bukkit.getScheduler().cancelTask(timertask);
         timerrepeatleft = 3;
         activeEvent.getPlayerRewards(sortByValues(activeEvent.count));
-        Bukkit.broadcastMessage("§6"+activeEvent.name + " " + LanguageManager.getInstance().eventendtext);
+        Bukkit.broadcastMessage("§6" + activeEvent.name + " " + LanguageManager.getInstance().eventendtext);
         activeEvent.count.clear();
         eventactive = false;
         activeEvent = null;
@@ -224,7 +234,7 @@ public class AMEEventManager
 
     public void addCountKillEvent(Player p, EntityType typ, int value)
     {
-        if (activeEvent.countentity.contains(typ))
+        if (activeEvent.countEntities.contains(typ))
         {
             if (activeEvent.count.containsKey(p))
             {
@@ -240,7 +250,7 @@ public class AMEEventManager
 
     public void addCountHarvestEvent(Player p, Material typ, int value)
     {
-        if (activeEvent.countblock.contains(typ))
+        if (activeEvent.countBlocks.contains(typ))
         {
             if (activeEvent.count.containsKey(p))
             {
@@ -276,6 +286,6 @@ public class AMEEventManager
     {
         Random r = new Random();
         int randomNumber = r.nextInt(maxtime - mintime) + mintime;
-        autoeventtask = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), () -> startEvent(), (long) ((randomNumber * 60) * 20));
+        autoeventtask = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), this::startEvent, ((randomNumber * 60) * 20));
     }
 }
