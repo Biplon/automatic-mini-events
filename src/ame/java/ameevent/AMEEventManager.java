@@ -173,14 +173,24 @@ public class AMEEventManager
     {
         double minutes = (time % 3600) / 60;
         double seconds = time % 60;
-        String t = "";
-        if (minutes >= 1)
+        String t;
+        String sec;
+        if (seconds<10)
         {
-            t = (int)minutes +":"+(int)seconds + LanguageManager.getInstance().mintext;;
+            sec = "0"+ +(int)seconds;
         }
         else
         {
-            t = (int)seconds + LanguageManager.getInstance().sectext;
+            sec = (int)seconds+"";
+        }
+        if (minutes >= 1)
+        {
+
+            t = (int)minutes +":"+ sec + LanguageManager.getInstance().mintext;;
+        }
+        else
+        {
+            t = sec + LanguageManager.getInstance().sectext;
         }
         return t;
     }
