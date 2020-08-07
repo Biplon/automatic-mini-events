@@ -17,6 +17,9 @@ general:
   eventminplayer: false
   #players that must by online if eventminplayer true
   eventminplayervalue: 20
+  #time left loop in sec
+  remainingtimeloop: 30
+
 
 
 

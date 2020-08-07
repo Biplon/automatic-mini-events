@@ -1,6 +1,9 @@
 package ame.java.ameevent;
 
 import ame.java.lang.LanguageManager;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -77,12 +80,6 @@ public class AMEEvent
                     }
                 }
             }
-            /*
-            else if (type == EventTyp.fishing)
-            {
-
-            }
-             */
             createRewards();
         }
         catch (Exception ex)
@@ -108,7 +105,7 @@ public class AMEEvent
             {
                 place = "#>10";
             }
-            rewards[i] = AMEEventManager.createItem(Material.PAPER, LanguageManager.getInstance().rewardBagName, name, place);
+            rewards[i] = AMEEventManager.createItem(Material.PAPER, LanguageManager.getInstance().rewardBagName,LanguageManager.getInstance().rewardBagNamelore1, name, place);
         }
     }
 
@@ -121,17 +118,26 @@ public class AMEEvent
             if (i == 0)
             {
                 map = ((Player) p[i]).getInventory().addItem(rewards[i]);
-                Bukkit.broadcastMessage(LanguageManager.getInstance().eventwinneris+ " §6" +  ((Player) p[i]).getName());
+                TextComponent message = new TextComponent(LanguageManager.getInstance().eventtoplistlink);
+                message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ametl"));
+                ComponentBuilder tmp = new ComponentBuilder();
+                tmp.append(LanguageManager.getInstance().eventwinneris.replace("%p1%",((Player) p[i]).getName()).replace("%toplist%",""));
+                tmp.append(message);
+                for (Player pl: Bukkit.getOnlinePlayers())
+                {
+                    if (pl != null)
+                    {
+                        pl.spigot().sendMessage(tmp.create());
+                    }
+                }
             }
             else if (i == 1)
             {
                 map = ((Player) p[i]).getInventory().addItem(rewards[i]);
-                Bukkit.broadcastMessage(LanguageManager.getInstance().eventwinner2is+ " §6" +  ((Player) p[i]).getName());
             }
             else if (i == 2)
             {
                 map = ((Player) p[i]).getInventory().addItem(rewards[i]);
-                Bukkit.broadcastMessage(LanguageManager.getInstance().eventwinner3is+ " §6" +  ((Player) p[i]).getName());
             }
             else if (i < 10)
             {
@@ -141,8 +147,8 @@ public class AMEEvent
             {
                 map = ((Player) p[i]).getInventory().addItem(rewards[4]);
             }
-            ((Player) p[i]).sendMessage(LanguageManager.getInstance().eventgetplacetext+ " §6"+ (i +1));
-            ((Player) p[i]).sendMessage(LanguageManager.getInstance().eventgetrewardtext+ " §6"+ LanguageManager.getInstance().rewardBagName);
+            ((Player) p[i]).sendMessage(LanguageManager.getInstance().eventgetplacetext+ " "+ (i +1));
+            ((Player) p[i]).sendMessage(LanguageManager.getInstance().eventgetrewardtext+ " "+ LanguageManager.getInstance().rewardBagName);
             if (map.size() == 1)
             {
                 for (final ItemStack item : map.values())

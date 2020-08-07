@@ -52,12 +52,12 @@ public class AMERewardManager
 
     public boolean getPlayerReward(Player p, ItemStack i)
     {
-        String name = Objects.requireNonNull(Objects.requireNonNull(i.getItemMeta()).getLore()).get(0);
+        String name = Objects.requireNonNull(Objects.requireNonNull(i.getItemMeta()).getLore()).get(1);
         for (AMEReward re: rewards)
         {
             if (re.name.equals(name))
             {
-                name = Objects.requireNonNull(i.getItemMeta().getLore()).get(1).replace("#","");
+                name = Objects.requireNonNull(i.getItemMeta().getLore()).get(2).replace("#","");
                 switch (name)
                 {
                     case "1":

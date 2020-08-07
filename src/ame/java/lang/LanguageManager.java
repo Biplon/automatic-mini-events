@@ -37,8 +37,14 @@ public class LanguageManager
     public String eventgetplacetext;
 
     public String eventwinneris;
-    public String eventwinner2is;
-    public String eventwinner3is;
+
+    public String  rewardBagNamelore1;
+
+    public String toplist;
+
+    public String  eventtoplistlink;
+
+    public String[] toplistplaces = new String[10];
 
     public void loadLang()
     {
@@ -53,7 +59,12 @@ public class LanguageManager
         eventgetrewardtext = cfg.getString("eventgetrewardtext") != null ? cfg.getString("eventgetrewardtext") : "Your reward is:";
         eventgetplacetext = cfg.getString("eventgetplacetext") != null ? cfg.getString("eventgetplacetext") : "Your rank in the event was:";
         eventwinneris = cfg.getString("eventwinneris") != null ? cfg.getString("eventwinneris") : "1st place is:";
-        eventwinner2is = cfg.getString("eventwinner2is") != null ? cfg.getString("eventwinner2is") : "2nd place is:";
-        eventwinner3is = cfg.getString("eventwinner3is") != null ? cfg.getString("eventwinner3is") : "3rd place is:";
+        rewardBagNamelore1 = cfg.getString("rewardBagNamelore1") != null ? cfg.getString("rewardBagNamelore1") : "&0Item: Reward bag";
+        toplist = cfg.getString("toplist") != null ? cfg.getString("toplist") : "Toplist";
+        eventtoplistlink = cfg.getString("eventtoplistlink") != null ? cfg.getString("eventtoplistlink") : "Show toplist";
+        for (int i = 0; i < toplistplaces.length; i++)
+        {
+            toplistplaces[i] = cfg.getString("toplistplace"+(i+1)) != null ? cfg.getString("toplistplace"+(i+1)) : "#1";
+        }
     }
 }

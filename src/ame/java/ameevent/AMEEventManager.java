@@ -53,6 +53,10 @@ public class AMEEventManager
 
     private int eventminplayervalue;
 
+    private double  remainingtimeloop;
+
+    private String[] toplist = new String[10];
+
     private final DecimalFormat df = new DecimalFormat("#.##");
 
     public void initEvents()
@@ -65,7 +69,9 @@ public class AMEEventManager
         eventsperi = AME.getInstance().getConfig().getBoolean("general.period");
         eventminplayervalue = AME.getInstance().getConfig().getInt("general.eventminplayervalue");
         eventminplayer = AME.getInstance().getConfig().getBoolean("general.eventminplayer");
+        remainingtimeloop = AME.getInstance().getConfig().getDouble("general.remainingtimeloop");
         lastEvent = aMEEvents[0];
+        Arrays.fill(toplist, "---");
     }
 
     public static ItemStack createItem(final Material material, final String name, final String... lore)
@@ -154,7 +160,7 @@ public class AMEEventManager
         {
             for (AMEEvent e : aMEEvents)
             {
-                if (e.name.equals(name))
+                if (e.name.replaceAll("\\s","").equals(name))
                 {
                     start(e);
                     return;
@@ -167,6 +173,7 @@ public class AMEEventManager
     {
         eventactive = true;
         activeEvent = e;
+        timeleft = e.time * 60;
         Bukkit.getScheduler().cancelTask(autoeventtask);
         Bukkit.broadcastMessage("§6" + e.name + " " + LanguageManager.getInstance().starttext);
         for (String msg : e.desc)
@@ -179,32 +186,79 @@ public class AMEEventManager
                 }
             }
         }
-        Bukkit.broadcastMessage(LanguageManager.getInstance().eventduration + " §6" + e.time +" min!");
+        String msg = LanguageManager.getInstance().eventduration.replace("%eventname%",activeEvent.name).replace("%time%",e.time+"");
+        Bukkit.broadcastMessage(msg);
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), () -> stopEvent(), (long) ((e.time * 60) * 20));
-        timertask = Bukkit.getScheduler().scheduleSyncRepeatingTask(AME.getInstance(), new Runnable()
+        if (e.time*60 < remainingtimeloop)
         {
-            @Override
-            public void run()
+            timertask = Bukkit.getScheduler().scheduleSyncRepeatingTask(AME.getInstance(), new Runnable()
             {
-                String formatted = df.format(((e.time) / 3) * timerrepeatleft);
-                for (Player p : Bukkit.getOnlinePlayers())
+                @Override
+                public void run()
                 {
-                    if (p.isOnline())
+                    String formatted = df.format(((e.time) / 3) * timerrepeatleft);
+                    for (Player p : Bukkit.getOnlinePlayers())
                     {
-                        p.sendMessage(LanguageManager.getInstance().eventminleft + " §6" + formatted + " min!");
+                        if (p.isOnline())
+                        {
+                            String msg = LanguageManager.getInstance().eventminleft.replace("%eventname%",activeEvent.name).replace("%timeleft%",(activeEvent.time / 2) * 60+"");
+                            p.sendMessage(msg);
+                        }
                     }
                 }
-                timerrepeatleft--;
-            }
-        }, (long) ((e.time * 60) * 20) / 3, (long) ((e.time * 60) * 20) / 3);
+            },(long) (e.time * 60 / 2) * 20,(long) (e.time * 60 / 2)  * 20);
+        }
+        else
+        {
+            timertask = Bukkit.getScheduler().scheduleSyncRepeatingTask(AME.getInstance(), new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    String formatted = df.format(((e.time) / 3) * timerrepeatleft);
+                    timeleft -=remainingtimeloop;
+                    for (Player p : Bukkit.getOnlinePlayers())
+                    {
+                        if (p.isOnline())
+                        {
+                            double minutes = (timeleft % 3600) / 60;
+                            double seconds = timeleft % 60;
+                            String time = (int)minutes +":"+(int)seconds;
+                            String msg = LanguageManager.getInstance().eventminleft.replace("%eventname%",activeEvent.name).replace("%timeleft%",time);
+                            p.sendMessage(msg);
+                        }
+                    }
+                }
+            },(long) remainingtimeloop * 20,(long) remainingtimeloop * 20);
+        }
+
     }
+
+    private double timeleft;
 
     public void stopEvent()
     {
         Bukkit.getScheduler().cancelTask(timertask);
         timerrepeatleft = 2;
-        activeEvent.getPlayerRewards(sortByValues(activeEvent.count));
-        Bukkit.broadcastMessage("§6" + activeEvent.name + " " + LanguageManager.getInstance().eventendtext);
+        HashMap<Player, Integer> list = sortByValues(activeEvent.count);
+        if(list.size() >0)
+        {
+            Object[] p = list.keySet().toArray();
+            for (int i = 0; i < 10; i++)
+            {
+                if (p.length > i)
+                {
+                    toplist[i] = ((Player) p[i]).getName();
+                }
+                else
+                {
+                    toplist[i] = "---";
+                }
+            }
+        }
+        activeEvent.getPlayerRewards(list);
+        String msg = LanguageManager.getInstance().eventendtext.replace("%eventname%",activeEvent.name);
+        Bukkit.broadcastMessage(msg);
         activeEvent.count.clear();
         eventactive = false;
         activeEvent = null;
@@ -287,5 +341,17 @@ public class AMEEventManager
         Random r = new Random();
         int randomNumber = r.nextInt(maxtime - mintime) + mintime;
         autoeventtask = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), this::startEvent, ((randomNumber * 60) * 20));
+    }
+
+    public void getTopList(Player player)
+    {
+        for (String t:LanguageManager.getInstance().toplist.replace("%eventname%",lastEvent.name).split("&n"))
+        {
+            player.sendMessage(t);
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            player.sendMessage(LanguageManager.getInstance().toplistplaces[i].replace("%p"+(i+1)+"%",toplist[i]));
+        }
     }
 }

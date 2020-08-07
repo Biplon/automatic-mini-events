@@ -1,6 +1,8 @@
 package ame.java.command;
 
+import ame.java.Reward.AMERewardManager;
 import ame.java.ameevent.AMEEventManager;
+import ame.java.lang.LanguageManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -23,6 +25,8 @@ public class CommandReloadEvent implements CommandExecutor
                 if (!AMEEventManager.getInstance().eventactive)
                 {
                     AMEEventManager.getInstance().initEvents();
+                    AMERewardManager.getInstance().loadRewards();
+                    LanguageManager.getInstance().loadLang();
                     player.sendMessage("Reloaded AME Events!");
                 }
                 else
