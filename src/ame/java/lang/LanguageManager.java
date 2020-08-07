@@ -46,6 +46,10 @@ public class LanguageManager
 
     public String[] toplistplaces = new String[10];
 
+    public String mintext;
+
+    public String sectext;
+
     public void loadLang()
     {
         File configFile = new File("plugins" + File.separator + AME.getInstance().getName() + File.separator + AME.getInstance().getConfig().getString("general.lang") + ".yml");
@@ -62,6 +66,8 @@ public class LanguageManager
         rewardBagNamelore1 = cfg.getString("rewardBagNamelore1") != null ? cfg.getString("rewardBagNamelore1") : "&0Item: Reward bag";
         toplist = cfg.getString("toplist") != null ? cfg.getString("toplist") : "Toplist";
         eventtoplistlink = cfg.getString("eventtoplistlink") != null ? cfg.getString("eventtoplistlink") : "Show toplist";
+        mintext = cfg.getString("mintext") != null ? cfg.getString("mintext") : "min";
+        sectext = cfg.getString("sectext") != null ? cfg.getString("sectext") : "sec";
         for (int i = 0; i < toplistplaces.length; i++)
         {
             toplistplaces[i] = cfg.getString("toplistplace"+(i+1)) != null ? cfg.getString("toplistplace"+(i+1)) : "#1";

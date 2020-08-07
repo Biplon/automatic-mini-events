@@ -48,7 +48,7 @@ public class AME extends JavaPlugin
 
     private void regCommands()
     {
-        this.getCommand("amereloadevent").setExecutor(new CommandReloadEvent());
+        this.getCommand("amereload").setExecutor(new CommandReloadEvent());
         this.getCommand("amestartevent").setExecutor(new CommandStartEvent());
         this.getCommand("ametl").setExecutor(new CommandLastTopList());
     }

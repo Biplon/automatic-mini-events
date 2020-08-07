@@ -169,6 +169,22 @@ public class AMEEventManager
         }
     }
 
+    private String getTimeString(double time)
+    {
+        double minutes = (time % 3600) / 60;
+        double seconds = time % 60;
+        String t = "";
+        if (minutes >= 1)
+        {
+            t = (int)minutes +":"+(int)seconds + LanguageManager.getInstance().mintext;;
+        }
+        else
+        {
+            t = (int)seconds + LanguageManager.getInstance().sectext;
+        }
+        return t;
+    }
+
     private void start(AMEEvent e)
     {
         eventactive = true;
@@ -186,7 +202,7 @@ public class AMEEventManager
                 }
             }
         }
-        String msg = LanguageManager.getInstance().eventduration.replace("%eventname%",activeEvent.name).replace("%time%",e.time+"");
+        String msg = LanguageManager.getInstance().eventduration.replace("%eventname%",activeEvent.name).replace("%time%",getTimeString(e.time * 60)+"");
         Bukkit.broadcastMessage(msg);
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), () -> stopEvent(), (long) ((e.time * 60) * 20));
         if (e.time*60 < remainingtimeloop)
@@ -196,7 +212,6 @@ public class AMEEventManager
                 @Override
                 public void run()
                 {
-                    String formatted = df.format(((e.time) / 3) * timerrepeatleft);
                     for (Player p : Bukkit.getOnlinePlayers())
                     {
                         if (p.isOnline())
@@ -215,16 +230,12 @@ public class AMEEventManager
                 @Override
                 public void run()
                 {
-                    String formatted = df.format(((e.time) / 3) * timerrepeatleft);
                     timeleft -=remainingtimeloop;
                     for (Player p : Bukkit.getOnlinePlayers())
                     {
                         if (p.isOnline())
                         {
-                            double minutes = (timeleft % 3600) / 60;
-                            double seconds = timeleft % 60;
-                            String time = (int)minutes +":"+(int)seconds;
-                            String msg = LanguageManager.getInstance().eventminleft.replace("%eventname%",activeEvent.name).replace("%timeleft%",time);
+                            String msg = LanguageManager.getInstance().eventminleft.replace("%eventname%",activeEvent.name).replace("%timeleft%",getTimeString(timeleft));
                             p.sendMessage(msg);
                         }
                     }
