@@ -201,7 +201,7 @@ public class AMEEventManager
         activeEvent = e;
         timeleft = e.time * 60;
         Bukkit.getScheduler().cancelTask(autoeventtask);
-        Bukkit.broadcastMessage("§6" + e.name + " " + LanguageManager.getInstance().starttext);
+        Bukkit.broadcastMessage(replaceEventPlaceHolder(LanguageManager.getInstance().starttext));
         for (String msg : e.desc)
         {
             for (Player p : Bukkit.getOnlinePlayers())
@@ -212,7 +212,7 @@ public class AMEEventManager
                 }
             }
         }
-        String msg = LanguageManager.getInstance().eventduration.replace("%eventname%",activeEvent.name).replace("%time%",getTimeString(e.time * 60)+"");
+        String msg =  replaceEventPlaceHolder(LanguageManager.getInstance().eventduration).replace("%time%",getTimeString(e.time * 60)+"");
         Bukkit.broadcastMessage(msg);
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), () -> stopEvent(), (long) ((e.time * 60) * 20));
         if (e.time*60 < remainingtimeloop)
@@ -226,7 +226,7 @@ public class AMEEventManager
                     {
                         if (p.isOnline())
                         {
-                            String msg = LanguageManager.getInstance().eventminleft.replace("%eventname%",activeEvent.name).replace("%timeleft%",(activeEvent.time / 2) * 60+"");
+                            String msg =  replaceEventPlaceHolder(LanguageManager.getInstance().eventminleft).replace("%timeleft%",(activeEvent.time / 2) * 60+"");
                             p.sendMessage(msg);
                         }
                     }
@@ -245,7 +245,7 @@ public class AMEEventManager
                     {
                         if (p.isOnline())
                         {
-                            String msg = LanguageManager.getInstance().eventminleft.replace("%eventname%",activeEvent.name).replace("%timeleft%",getTimeString(timeleft));
+                            String msg = replaceEventPlaceHolder(LanguageManager.getInstance().eventminleft).replace("%timeleft%",getTimeString(timeleft));
                             p.sendMessage(msg);
                         }
                     }
@@ -278,12 +278,15 @@ public class AMEEventManager
             }
         }
         activeEvent.getPlayerRewards(list);
-        String msg = LanguageManager.getInstance().eventendtext.replace("%eventname%",activeEvent.name);
+        String msg = replaceEventPlaceHolder(LanguageManager.getInstance().eventendtext);
         Bukkit.broadcastMessage(msg);
         activeEvent.count.clear();
         eventactive = false;
         activeEvent = null;
-        startTimer();
+        if (AME.getInstance().getConfig().getBoolean("general.active"))
+        {
+            startTimer();
+        }
     }
 
     private static HashMap sortByValues(HashMap map)
@@ -307,6 +310,11 @@ public class AMEEventManager
         return sortedHashMap;
     }
 
+    private String replaceEventPlaceHolder(String msg)
+    {
+        return msg.replace("%eventname%",activeEvent.name);
+    }
+
     public void addCountKillEvent(Player p, EntityType typ, int value)
     {
         if (activeEvent.countEntities.contains(typ))
@@ -319,7 +327,7 @@ public class AMEEventManager
             {
                 activeEvent.count.put(p, value);
             }
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(LanguageManager.getInstance().progresstext + " §6" + activeEvent.count.get(p)));
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progresstext) +""+ activeEvent.count.get(p)));
         }
     }
 
@@ -335,7 +343,7 @@ public class AMEEventManager
             {
                 activeEvent.count.put(p, value);
             }
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(LanguageManager.getInstance().progresstext + " §6" + activeEvent.count.get(p)));
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progresstext) +""+ activeEvent.count.get(p)));
         }
     }
 
@@ -349,7 +357,7 @@ public class AMEEventManager
         {
             activeEvent.count.put(p, value);
         }
-        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(LanguageManager.getInstance().progresstext + " §6" + activeEvent.count.get(p)));
+        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progresstext) + "" + activeEvent.count.get(p)));
     }
 
     public EventTyp getEventType()
