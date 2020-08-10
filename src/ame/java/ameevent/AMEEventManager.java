@@ -39,7 +39,6 @@ public class AMEEventManager
     }
 
     private int timertask;
-    private int timerrepeatleft = 2;
 
     private int autoeventtask;
     private int mintime = 40;
@@ -223,7 +222,13 @@ public class AMEEventManager
                 @Override
                 public void run()
                 {
-                    sendMessage(LanguageManager.getInstance().eventminleft.replace("%timeleft%", (activeEvent.time / 2) * 60 + ""), null);
+                    for (Player u :  activeEvent.count.keySet())
+                    {
+                        if (u.isOnline())
+                        {
+                            sendMessage(LanguageManager.getInstance().eventminleft.replace("%timeleft%", (activeEvent.time / 2) * 60 + ""), u);
+                        }
+                    }
                 }
             }, (long) (e.time * 60 / 2) * 20, (long) (e.time * 60 / 2) * 20);
         }
@@ -235,9 +240,30 @@ public class AMEEventManager
                 public void run()
                 {
                     timeleft -= remainingtimeloop;
-                    sendMessage(LanguageManager.getInstance().eventminleft.replace("%timeleft%", getTimeString(timeleft)), null);
+                    for (Player u :  activeEvent.count.keySet())
+                    {
+                        if (u.isOnline())
+                        {
+                            sendMessage(LanguageManager.getInstance().eventminleft.replace("%timeleft%", getTimeString(timeleft)), u);
+                        }
+                    }
                 }
             }, (long) remainingtimeloop * 20, (long) remainingtimeloop * 20);
+
+            Bukkit.getScheduler().runTaskLater(AME.getInstance(), new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    for (Player u :  activeEvent.count.keySet())
+                    {
+                        if (u.isOnline())
+                        {
+                            sendMessage(LanguageManager.getInstance().eventminleft.replace("%timeleft%", getTimeString(60)), u);
+                        }
+                    }
+                }
+            }, (long) (timeleft-60) * 20);
         }
 
     }
@@ -247,7 +273,13 @@ public class AMEEventManager
     public void stopEvent()
     {
         Bukkit.getScheduler().cancelTask(timertask);
-        timerrepeatleft = 2;
+        for (Player u :  activeEvent.count.keySet())
+        {
+            if (u.isOnline())
+            {
+                sendMessage(LanguageManager.getInstance().eventendtext, u);
+            }
+        }
         HashMap<Player, Integer> list = sortByValues(activeEvent.count);
         if (list.size() > 0)
         {
@@ -265,7 +297,6 @@ public class AMEEventManager
             }
         }
         activeEvent.getPlayerRewards(list);
-        sendMessage(LanguageManager.getInstance().eventendtext,null);
         activeEvent.count.clear();
         eventactive = false;
         activeEvent = null;
@@ -391,6 +422,23 @@ public class AMEEventManager
             {
                 p.sendMessage(s);
             }
+        }
+    }
+
+    public void showPlayerEvent(Player player)
+    {
+        if (activeEvent != null)
+        {
+            sendMessage(activeEvent.name,player);
+            for (String msg : activeEvent.desc)
+            {
+                sendMessage(msg,player);
+            }
+            sendMessage(LanguageManager.getInstance().eventminleft.replace("%timeleft%", getTimeString(timeleft)),player);
+        }
+        else
+        {
+            sendMessage(LanguageManager.getInstance().noeventrunning,player);
         }
     }
 }

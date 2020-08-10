@@ -2,6 +2,7 @@ package ame.java;
 
 import ame.java.Reward.AMERewardManager;
 import ame.java.command.CommandLastTopList;
+import ame.java.command.CommandShowEvent;
 import ame.java.event.OnBlockDrop;
 import ame.java.event.OnEntityDeath;
 import ame.java.command.CommandReloadEvent;
@@ -51,6 +52,7 @@ public class AME extends JavaPlugin
         this.getCommand("amereload").setExecutor(new CommandReloadEvent());
         this.getCommand("amestartevent").setExecutor(new CommandStartEvent());
         this.getCommand("ametl").setExecutor(new CommandLastTopList());
+        this.getCommand("ameshow").setExecutor(new CommandShowEvent());
     }
 
     private void regEvents()

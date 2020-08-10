@@ -123,11 +123,11 @@ public class AMEEvent
                 ComponentBuilder tmp = new ComponentBuilder();
                 tmp.append( AMEEventManager.getInstance().replaceEventPlaceHolder(LanguageManager.getInstance().eventwinneris).replace("%p1%",((Player) p[i]).getName()).replace("%toplist%",""));
                 tmp.append(message);
-                for (Player pl: Bukkit.getOnlinePlayers())
+                for (Object pl: p)
                 {
                     if (pl != null)
                     {
-                        pl.spigot().sendMessage(tmp.create());
+                        ((Player)pl).spigot().sendMessage(tmp.create());
                     }
                 }
             }

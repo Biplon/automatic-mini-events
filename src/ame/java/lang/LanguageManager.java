@@ -50,6 +50,8 @@ public class LanguageManager
 
     public String sectext;
 
+    public String noeventrunning;
+
     public void loadLang()
     {
         File configFile = new File("plugins" + File.separator + AME.getInstance().getName() + File.separator + AME.getInstance().getConfig().getString("general.lang") + ".yml");
@@ -68,6 +70,7 @@ public class LanguageManager
         eventtoplistlink = cfg.getString("eventtoplistlink") != null ? cfg.getString("eventtoplistlink") : "Show toplist";
         mintext = cfg.getString("mintext") != null ? cfg.getString("mintext") : "min";
         sectext = cfg.getString("sectext") != null ? cfg.getString("sectext") : "sec";
+        noeventrunning = cfg.getString("noeventrunning") != null ? cfg.getString("noeventrunning") : "no event active";
         for (int i = 0; i < toplistplaces.length; i++)
         {
             toplistplaces[i] = cfg.getString("toplistplace"+(i+1)) != null ? cfg.getString("toplistplace"+(i+1)) : "#1";
