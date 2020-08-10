@@ -121,7 +121,7 @@ public class AMEEvent
                 TextComponent message = new TextComponent(LanguageManager.getInstance().eventtoplistlink);
                 message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ametl"));
                 ComponentBuilder tmp = new ComponentBuilder();
-                tmp.append(LanguageManager.getInstance().eventwinneris.replace("%p1%",((Player) p[i]).getName()).replace("%toplist%",""));
+                tmp.append( AMEEventManager.getInstance().replaceEventPlaceHolder(LanguageManager.getInstance().eventwinneris).replace("%p1%",((Player) p[i]).getName()).replace("%toplist%",""));
                 tmp.append(message);
                 for (Player pl: Bukkit.getOnlinePlayers())
                 {
@@ -147,8 +147,8 @@ public class AMEEvent
             {
                 map = ((Player) p[i]).getInventory().addItem(rewards[4]);
             }
-            ((Player) p[i]).sendMessage(LanguageManager.getInstance().eventgetplacetext+ " "+ (i +1));
-            ((Player) p[i]).sendMessage(LanguageManager.getInstance().eventgetrewardtext+ " "+ LanguageManager.getInstance().rewardBagName);
+            AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventgetplacetext+ " "+ (i +1), ((Player) p[i]));
+            AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventgetrewardtext+ " "+ LanguageManager.getInstance().rewardBagName ,((Player) p[i]));
             if (map.size() == 1)
             {
                 for (final ItemStack item : map.values())
