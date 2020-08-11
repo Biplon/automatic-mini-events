@@ -135,7 +135,6 @@ public class AMEEventManager
 
             if ((aMEEvents[randomNumber].startTyp == time || aMEEvents[randomNumber].startTyp == EventStartTyp.all) && !aMEEvents[randomNumber].name.equals(lastEvent.name))
             {
-                lastEvent = aMEEvents[randomNumber];
                 return aMEEvents[randomNumber];
             }
         }
@@ -298,6 +297,7 @@ public class AMEEventManager
         }
         activeEvent.getPlayerRewards(list);
         activeEvent.count.clear();
+        lastEvent = activeEvent;
         eventactive = false;
         activeEvent = null;
         if (AME.getInstance().getConfig().getBoolean("general.active"))
