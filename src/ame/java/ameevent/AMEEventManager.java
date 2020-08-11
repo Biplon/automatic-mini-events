@@ -329,7 +329,14 @@ public class AMEEventManager
 
     String replaceEventPlaceHolder(String msg)
     {
-        return msg.replace("%eventname%", activeEvent.name);
+        if (activeEvent != null)
+        {
+            return msg.replace("%eventname%", activeEvent.name);
+        }
+        else
+        {
+            return msg;
+        }
     }
 
     public void addCountKillEvent(Player p, EntityType typ, int value)
@@ -427,7 +434,7 @@ public class AMEEventManager
 
     public void showPlayerEvent(Player player)
     {
-        if (activeEvent != null)
+        if(activeEvent != null)
         {
             sendMessage(activeEvent.name,player);
             for (String msg : activeEvent.desc)

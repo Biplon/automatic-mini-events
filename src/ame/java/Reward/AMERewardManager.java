@@ -63,36 +63,48 @@ public class AMERewardManager
                     case "1":
                         for (String co : re.rewardcommands1)
                         {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
+                            executecommand(co,p);
                         }
                         return true;
                     case "2":
                         for (String co : re.rewardcommands2)
                         {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
+                            executecommand(co,p);
                         }
                         return true;
                     case "3":
                         for (String co : re.rewardcommands3)
                         {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
+                            executecommand(co,p);
                         }
                         return true;
                     case "4-10":
                         for (String co : re.rewardcommands410)
                         {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
+                            executecommand(co,p);
                         }
                         return true;
                     case ">10":
                         for (String co : re.rewardcommands11)
                         {
-                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
+                            executecommand(co,p);
                         }
                         return true;
                 }
             }
         }
         return false;
+    }
+
+    private void executecommand(String co,Player p)
+    {
+        try
+        {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), co.replace("%player%", p.getName()));
+        }
+        catch (Exception e)
+        {
+            Bukkit.getLogger().warning(e.getMessage());
+        }
     }
 }
