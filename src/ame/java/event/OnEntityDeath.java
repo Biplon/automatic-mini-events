@@ -11,7 +11,7 @@ public class OnEntityDeath implements Listener
     @EventHandler
     public void onDeath(final EntityDeathEvent event)
     {
-        if (AMEEventManager.getInstance().eventactive && AMEEventManager.getInstance().getEventType() == EventTyp.killenemy)
+        if (AMEEventManager.getInstance().eventActive && AMEEventManager.getInstance().getEventType() == EventTyp.killenemy)
         {
             if (event.getEntity().getKiller() != null)
             {

@@ -105,7 +105,7 @@ public class AMEEvent
             {
                 place = "#>10";
             }
-            rewards[i] = AMEEventManager.createItem(Material.PAPER, LanguageManager.getInstance().rewardBagName,LanguageManager.getInstance().rewardBagNamelore1, name, place);
+            rewards[i] = AMEEventManager.createItem(Material.PAPER, LanguageManager.getInstance().rewardBagName,LanguageManager.getInstance().rewardBagNameLore1, name, place);
         }
     }
 
@@ -118,10 +118,10 @@ public class AMEEvent
             if (i == 0)
             {
                 map = ((Player) p[i]).getInventory().addItem(rewards[i]);
-                TextComponent message = new TextComponent(LanguageManager.getInstance().eventtoplistlink);
+                TextComponent message = new TextComponent(LanguageManager.getInstance().eventTopListLink);
                 message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ametl"));
                 ComponentBuilder tmp = new ComponentBuilder();
-                tmp.append( AMEEventManager.getInstance().replaceEventPlaceHolder(LanguageManager.getInstance().eventwinneris).replace("%p1%",((Player) p[i]).getName()).replace("%toplist%",""));
+                tmp.append( AMEEventManager.getInstance().replaceEventPlaceHolder(LanguageManager.getInstance().eventWinnerIs).replace("%p1%",((Player) p[i]).getName()).replace("%toplist%",""));
                 tmp.append(message);
                 for (Object pl: p)
                 {
@@ -147,8 +147,8 @@ public class AMEEvent
             {
                 map = ((Player) p[i]).getInventory().addItem(rewards[4]);
             }
-            AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventgetplacetext+ " "+ (i +1), ((Player) p[i]));
-            AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventgetrewardtext+ " "+ LanguageManager.getInstance().rewardBagName ,((Player) p[i]));
+            AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventGetPlaceText + " "+ (i +1), ((Player) p[i]));
+            AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventGetRewardText + " "+ LanguageManager.getInstance().rewardBagName ,((Player) p[i]));
             if (map.size() == 1)
             {
                 for (final ItemStack item : map.values())

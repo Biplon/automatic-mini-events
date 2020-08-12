@@ -16,7 +16,6 @@ public class CommandLastTopList implements CommandExecutor
             Player player = (Player) commandSender;
             AMEEventManager.getInstance().getTopList(player);
             return true;
-
         }
         return false;
     }

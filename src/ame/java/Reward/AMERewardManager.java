@@ -13,30 +13,13 @@ import java.util.Objects;
 
 public class AMERewardManager
 {
-    public List<AMEReward> rewards;
+    public static List<AMEReward> rewards;
 
-    static AMERewardManager instance;
-
-    public AMERewardManager()
-    {
-        instance = this;
-    }
-
-    public static AMERewardManager getInstance()
-    {
-        return instance;
-    }
-
-    public void loadRewards()
+    public static void loadRewards()
     {
         List<AMEReward> e = new ArrayList<>();
 
         File folder = new File(AME.getInstance().getDataFolder() + "/rewards");
-
-        if (!folder.exists())
-        {
-            folder.mkdir();
-        }
 
         List<String> result = new ArrayList<>();
 
@@ -50,7 +33,7 @@ public class AMERewardManager
         rewards = e;
     }
 
-    public boolean getPlayerReward(Player p, ItemStack i)
+    public static boolean getPlayerReward(Player p, ItemStack i)
     {
         String name = Objects.requireNonNull(Objects.requireNonNull(i.getItemMeta()).getLore()).get(1);
         for (AMEReward re: rewards)
@@ -61,33 +44,33 @@ public class AMERewardManager
                 switch (name)
                 {
                     case "1":
-                        for (String co : re.rewardcommands1)
+                        for (String co : re.rewardCommands1)
                         {
-                            executecommand(co,p);
+                            executeCommand(co,p);
                         }
                         return true;
                     case "2":
-                        for (String co : re.rewardcommands2)
+                        for (String co : re.rewardCommands2)
                         {
-                            executecommand(co,p);
+                            executeCommand(co,p);
                         }
                         return true;
                     case "3":
-                        for (String co : re.rewardcommands3)
+                        for (String co : re.rewardCommands3)
                         {
-                            executecommand(co,p);
+                            executeCommand(co,p);
                         }
                         return true;
                     case "4-10":
-                        for (String co : re.rewardcommands410)
+                        for (String co : re.rewardCommands410)
                         {
-                            executecommand(co,p);
+                            executeCommand(co,p);
                         }
                         return true;
                     case ">10":
-                        for (String co : re.rewardcommands11)
+                        for (String co : re.rewardCommands11)
                         {
-                            executecommand(co,p);
+                            executeCommand(co,p);
                         }
                         return true;
                 }
@@ -96,7 +79,7 @@ public class AMERewardManager
         return false;
     }
 
-    private void executecommand(String co,Player p)
+    private static void executeCommand(String co, Player p)
     {
         try
         {

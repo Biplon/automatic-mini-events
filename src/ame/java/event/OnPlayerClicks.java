@@ -20,11 +20,11 @@ public class OnPlayerClicks implements Listener
         Action action = event.getAction();
         if (player.getInventory().getItemInMainHand().getType() != Material.AIR)
         {
-            if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
+            if (Objects.requireNonNull(player.getInventory().getItemInMainHand().getItemMeta()).getDisplayName().equals(LanguageManager.getInstance().rewardBagName))
             {
-                if (Objects.requireNonNull(player.getInventory().getItemInMainHand().getItemMeta()).getDisplayName().equals(LanguageManager.getInstance().rewardBagName))
+                if (action == Action.RIGHT_CLICK_AIR || action == Action.RIGHT_CLICK_BLOCK)
                 {
-                    if (AMERewardManager.getInstance().getPlayerReward(player, Objects.requireNonNull(event.getItem())))
+                    if (AMERewardManager.getPlayerReward(player, Objects.requireNonNull(event.getItem())))
                     {
                         player.getInventory().getItemInMainHand().setAmount(player.getInventory().getItemInMainHand().getAmount() - 1);
                         event.setCancelled(true);

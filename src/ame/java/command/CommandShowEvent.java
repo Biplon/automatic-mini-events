@@ -16,7 +16,6 @@ public class CommandShowEvent implements CommandExecutor
             Player player = (Player) commandSender;
             AMEEventManager.getInstance().showPlayerEvent(player);
             return true;
-
         }
         return false;
     }

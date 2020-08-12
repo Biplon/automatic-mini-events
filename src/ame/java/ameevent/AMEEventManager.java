@@ -4,7 +4,6 @@ import ame.java.AME;
 import ame.java.config.EventConfigLoader;
 import ame.java.lang.LanguageManager;
 import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.text.DecimalFormat;
 import java.util.*;
 
 public class AMEEventManager
@@ -31,47 +29,47 @@ public class AMEEventManager
         instance = this;
     }
 
-    public boolean eventactive = false;
+    public boolean eventActive = false;
 
     public static AMEEventManager getInstance()
     {
         return instance;
     }
 
-    private int timertask;
+    private int timerTask;
 
-    private int autoeventtask;
-    private int mintime = 40;
-    private int maxtime = 80;
+    private int autoEventTask;
+    private int minTime = 40;
+    private int maxTime = 80;
 
-    private int eventsstart = 0;
-    private int eventends = 0;
+    private int eventsStart = 0;
+    private int eventEnds = 0;
+    private boolean eventsInPeriod;
 
-    private boolean eventsperi;
 
-    private boolean eventminplayer;
+    private boolean eventMinPlayer;
+    private int eventMinPlayerValue;
 
-    private int eventminplayervalue;
 
-    private double remainingtimeloop;
+    private double remainingTimeLoop;
 
-    private String[] toplist = new String[10];
-
-    private final DecimalFormat df = new DecimalFormat("#.##");
+    private double timeLeft;
+    
+    private final String[] topList = new String[10];
 
     public void initEvents()
     {
         aMEEvents = EventConfigLoader.loadEvents();
-        mintime = AME.getInstance().getConfig().getInt("general.mintime");
-        maxtime = AME.getInstance().getConfig().getInt("general.maxtime");
-        eventsstart = AME.getInstance().getConfig().getInt("general.eventsstart");
-        eventends = AME.getInstance().getConfig().getInt("general.eventsend");
-        eventsperi = AME.getInstance().getConfig().getBoolean("general.period");
-        eventminplayervalue = AME.getInstance().getConfig().getInt("general.eventminplayervalue");
-        eventminplayer = AME.getInstance().getConfig().getBoolean("general.eventminplayer");
-        remainingtimeloop = AME.getInstance().getConfig().getDouble("general.remainingtimeloop");
+        minTime = AME.getInstance().getConfig().getInt("general.mintime");
+        maxTime = AME.getInstance().getConfig().getInt("general.maxtime");
+        eventsStart = AME.getInstance().getConfig().getInt("general.eventsstart");
+        eventEnds = AME.getInstance().getConfig().getInt("general.eventsend");
+        eventsInPeriod = AME.getInstance().getConfig().getBoolean("general.period");
+        eventMinPlayerValue = AME.getInstance().getConfig().getInt("general.eventminplayervalue");
+        eventMinPlayer = AME.getInstance().getConfig().getBoolean("general.eventminplayer");
+        remainingTimeLoop = AME.getInstance().getConfig().getDouble("general.remainingtimeloop");
         lastEvent = aMEEvents[0];
-        Arrays.fill(toplist, "---");
+        Arrays.fill(topList, "---");
     }
 
     public static ItemStack createItem(final Material material, final String name, final String... lore)
@@ -89,24 +87,24 @@ public class AMEEventManager
 
     public void startEvent()
     {
-        if (!eventactive && aMEEvents.length > 0)
+        if (!eventActive && aMEEvents.length > 0)
         {
             boolean eventCanStart = true;
 
-            if (eventsperi)
+            if (eventsInPeriod)
             {
                 Date date = new Date();
                 Calendar calendar = GregorianCalendar.getInstance();
                 calendar.setTime(date);
-                if (calendar.get(Calendar.HOUR_OF_DAY) < eventsstart && calendar.get(Calendar.HOUR_OF_DAY) > eventends)
+                if (calendar.get(Calendar.HOUR_OF_DAY) < eventsStart && calendar.get(Calendar.HOUR_OF_DAY) > eventEnds)
                 {
                     eventCanStart = false;
                 }
             }
 
-            if (eventminplayer && eventCanStart)
+            if (eventMinPlayer && eventCanStart)
             {
-                if (Bukkit.getOnlinePlayers().size() < eventminplayervalue)
+                if (Bukkit.getOnlinePlayers().size() < eventMinPlayerValue)
                 {
                     eventCanStart = false;
                 }
@@ -118,7 +116,7 @@ public class AMEEventManager
             }
             else
             {
-                Bukkit.getScheduler().cancelTask(autoeventtask);
+                Bukkit.getScheduler().cancelTask(autoEventTask);
                 startTimer();
             }
         }
@@ -128,7 +126,7 @@ public class AMEEventManager
     {
         EventStartTyp time = isDay();
         Random generator = new Random();
-        int randomNumber = 0;
+        int randomNumber;
         while (true)
         {
             randomNumber = generator.nextInt(aMEEvents.length);
@@ -155,7 +153,7 @@ public class AMEEventManager
 
     public void startEvent(String name)
     {
-        if (!eventactive)
+        if (!eventActive)
         {
             for (AMEEvent e : aMEEvents)
             {
@@ -184,24 +182,22 @@ public class AMEEventManager
         }
         if (minutes >= 1)
         {
-
-            t = (int) minutes + ":" + sec + LanguageManager.getInstance().mintext;
-            ;
+            t = (int) minutes + ":" + sec + LanguageManager.getInstance().minText;
         }
         else
         {
-            t = sec + LanguageManager.getInstance().sectext;
+            t = sec + LanguageManager.getInstance().secText;
         }
         return t;
     }
 
     private void start(AMEEvent e)
     {
-        eventactive = true;
+        eventActive = true;
         activeEvent = e;
-        timeleft = e.time * 60;
-        Bukkit.getScheduler().cancelTask(autoeventtask);
-        sendMessage(LanguageManager.getInstance().starttext, null);
+        timeLeft = e.time * 60;
+        Bukkit.getScheduler().cancelTask(autoEventTask);
+        sendMessage(LanguageManager.getInstance().startText, null);
         for (String msg : e.desc)
         {
             for (Player p : Bukkit.getOnlinePlayers())
@@ -212,71 +208,56 @@ public class AMEEventManager
                 }
             }
         }
-        sendMessage(LanguageManager.getInstance().eventduration.replace("%time%", getTimeString(e.time * 60) + ""), null);
-        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), () -> stopEvent(), (long) ((e.time * 60) * 20));
-        if (e.time * 60 < remainingtimeloop)
+        sendMessage(LanguageManager.getInstance().eventDuration.replace("%time%", getTimeString(e.time * 60) + ""), null);
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), this::stopEvent, (long) ((e.time * 60) * 20));
+        if (e.time * 60 < remainingTimeLoop)
         {
-            timertask = Bukkit.getScheduler().scheduleSyncRepeatingTask(AME.getInstance(), new Runnable()
+            timerTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(AME.getInstance(), () ->
             {
-                @Override
-                public void run()
+                for (Player u :  activeEvent.count.keySet())
                 {
-                    for (Player u :  activeEvent.count.keySet())
+                    if (u.isOnline())
                     {
-                        if (u.isOnline())
-                        {
-                            sendMessage(LanguageManager.getInstance().eventminleft.replace("%timeleft%", (activeEvent.time / 2) * 60 + ""), u);
-                        }
+                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", (activeEvent.time / 2) * 60 + ""), u);
                     }
                 }
             }, (long) (e.time * 60 / 2) * 20, (long) (e.time * 60 / 2) * 20);
         }
         else
         {
-            timertask = Bukkit.getScheduler().scheduleSyncRepeatingTask(AME.getInstance(), new Runnable()
+            timerTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(AME.getInstance(), () ->
             {
-                @Override
-                public void run()
+                timeLeft -= remainingTimeLoop;
+                for (Player u :  activeEvent.count.keySet())
                 {
-                    timeleft -= remainingtimeloop;
-                    for (Player u :  activeEvent.count.keySet())
+                    if (u.isOnline())
                     {
-                        if (u.isOnline())
-                        {
-                            sendMessage(LanguageManager.getInstance().eventminleft.replace("%timeleft%", getTimeString(timeleft)), u);
-                        }
+                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(timeLeft)), u);
                     }
                 }
-            }, (long) remainingtimeloop * 20, (long) remainingtimeloop * 20);
+            }, (long) remainingTimeLoop * 20, (long) remainingTimeLoop * 20);
 
-            Bukkit.getScheduler().runTaskLater(AME.getInstance(), new Runnable()
+            Bukkit.getScheduler().runTaskLater(AME.getInstance(), () ->
             {
-                @Override
-                public void run()
+                for (Player u :  activeEvent.count.keySet())
                 {
-                    for (Player u :  activeEvent.count.keySet())
+                    if (u.isOnline())
                     {
-                        if (u.isOnline())
-                        {
-                            sendMessage(LanguageManager.getInstance().eventminleft.replace("%timeleft%", getTimeString(60)), u);
-                        }
+                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(60)), u);
                     }
                 }
-            }, (long) (timeleft-60) * 20);
+            }, (long) (timeLeft -60) * 20);
         }
-
     }
-
-    private double timeleft;
 
     public void stopEvent()
     {
-        Bukkit.getScheduler().cancelTask(timertask);
+        Bukkit.getScheduler().cancelTask(timerTask);
         for (Player u :  activeEvent.count.keySet())
         {
             if (u.isOnline())
             {
-                sendMessage(LanguageManager.getInstance().eventendtext, u);
+                sendMessage(LanguageManager.getInstance().eventEndText, u);
             }
         }
         HashMap<Player, Integer> list = sortByValues(activeEvent.count);
@@ -287,18 +268,22 @@ public class AMEEventManager
             {
                 if (p.length > i)
                 {
-                    toplist[i] = ((Player) p[i]).getName();
+                    topList[i] = ((Player) p[i]).getName();
                 }
                 else
                 {
-                    toplist[i] = "---";
+                    topList[i] = "---";
                 }
             }
+        }
+        else
+        {
+            Arrays.fill(topList, "---");
         }
         activeEvent.getPlayerRewards(list);
         activeEvent.count.clear();
         lastEvent = activeEvent;
-        eventactive = false;
+        eventActive = false;
         activeEvent = null;
         if (AME.getInstance().getConfig().getBoolean("general.active"))
         {
@@ -310,14 +295,8 @@ public class AMEEventManager
     {
         List list = new LinkedList(map.entrySet());
 
-        Collections.sort(list, new Comparator()
-        {
-            public int compare(Object o1, Object o2)
-            {
-                return ((Comparable) ((Map.Entry) (o1)).getValue())
-                        .compareTo(((Map.Entry) (o2)).getValue());
-            }
-        });
+        Collections.sort(list, (Comparator) (o1, o2) -> ((Comparable) ((Map.Entry) (o1)).getValue()).compareTo(((Map.Entry) (o2)).getValue()));
+
         HashMap sortedHashMap = new LinkedHashMap();
         for (Iterator it = list.iterator(); it.hasNext(); )
         {
@@ -351,7 +330,7 @@ public class AMEEventManager
             {
                 activeEvent.count.put(p, value);
             }
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progresstext) + "" + activeEvent.count.get(p)));
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progressText) + "" + activeEvent.count.get(p)));
         }
     }
 
@@ -367,7 +346,7 @@ public class AMEEventManager
             {
                 activeEvent.count.put(p, value);
             }
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progresstext) + "" + activeEvent.count.get(p)));
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progressText) + "" + activeEvent.count.get(p)));
         }
     }
 
@@ -381,7 +360,7 @@ public class AMEEventManager
         {
             activeEvent.count.put(p, value);
         }
-        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progresstext) + "" + activeEvent.count.get(p)));
+        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progressText) + "" + activeEvent.count.get(p)));
     }
 
     public EventTyp getEventType()
@@ -392,19 +371,19 @@ public class AMEEventManager
     public void startTimer()
     {
         Random r = new Random();
-        int randomNumber = r.nextInt(maxtime - mintime) + mintime;
-        autoeventtask = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), this::startEvent, ((randomNumber * 60) * 20));
+        int randomNumber = r.nextInt(maxTime - minTime) + minTime;
+        autoEventTask = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), this::startEvent, ((randomNumber * 60) * 20));
     }
 
     public void getTopList(Player player)
     {
-        for (String t : LanguageManager.getInstance().toplist.replace("%eventname%", lastEvent.name).split("/n"))
+        for (String t : LanguageManager.getInstance().topList.replace("%eventname%", lastEvent.name).split("/n"))
         {
             player.sendMessage(t);
         }
         for (int i = 0; i < 10; i++)
         {
-            player.sendMessage(LanguageManager.getInstance().toplistplaces[i].replace("%p" + (i + 1) + "%", toplist[i]));
+            player.sendMessage(LanguageManager.getInstance().topListPlaces[i].replace("%p" + (i + 1) + "%", topList[i]));
         }
     }
 
@@ -441,11 +420,11 @@ public class AMEEventManager
             {
                 sendMessage(msg,player);
             }
-            sendMessage(LanguageManager.getInstance().eventminleft.replace("%timeleft%", getTimeString(timeleft)),player);
+            sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(timeLeft)),player);
         }
         else
         {
-            sendMessage(LanguageManager.getInstance().noeventrunning,player);
+            sendMessage(LanguageManager.getInstance().noEventRunning,player);
         }
     }
 }

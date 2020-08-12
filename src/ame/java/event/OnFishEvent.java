@@ -11,12 +11,11 @@ public class OnFishEvent implements Listener
     @EventHandler
     public void onFishEvent(final PlayerFishEvent event)
     {
-        if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH)
+        if (AMEEventManager.getInstance().eventActive && AMEEventManager.getInstance().getEventType() == EventTyp.fishing)
         {
-            if (AMEEventManager.getInstance().eventactive && AMEEventManager.getInstance().getEventType() == EventTyp.fishing)
+            if (event.getState() == PlayerFishEvent.State.CAUGHT_FISH)
             {
-
-                AMEEventManager.getInstance().addCountFishEvent(event.getPlayer(),1);
+                AMEEventManager.getInstance().addCountFishEvent(event.getPlayer(), 1);
             }
         }
     }

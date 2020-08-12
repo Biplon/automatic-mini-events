@@ -6,18 +6,6 @@ import java.io.File;
 
 public class ConfigManager
 {
-    static ConfigManager instance;
-
-    public ConfigManager()
-    {
-        instance = this;
-    }
-
-    public static ConfigManager getInstance()
-    {
-        return instance;
-    }
-
     public static void loadConfig()
     {
         File configFile = new File("plugins" + File.separator + AME.getInstance().getName() + File.separator + "config.yml");

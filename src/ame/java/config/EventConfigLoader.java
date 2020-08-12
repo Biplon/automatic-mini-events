@@ -2,6 +2,7 @@ package ame.java.config;
 
 import ame.java.AME;
 import ame.java.ameevent.AMEEvent;
+import org.bukkit.Bukkit;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,11 +16,6 @@ public class EventConfigLoader
         List<AMEEvent> e = new ArrayList<>();
 
         File folder = new File(AME.getInstance().getDataFolder() + "/events");
-
-        if (!folder.exists())
-        {
-            folder.mkdir();
-        }
 
         List<String> result = new ArrayList<>();
 
@@ -54,8 +50,9 @@ public class EventConfigLoader
                 }
             }
         }
-        catch (Exception ignored)
+        catch (Exception e)
         {
+            Bukkit.getLogger().warning(e.getMessage());
         }
     }
 }

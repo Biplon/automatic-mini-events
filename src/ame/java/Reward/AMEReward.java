@@ -11,11 +11,11 @@ public class AMEReward
 {
     public String name;
 
-    public final List<String> rewardcommands1 = new ArrayList<>();
-    public final List<String> rewardcommands2 = new ArrayList<>();
-    public final List<String> rewardcommands3 = new ArrayList<>();
-    public final List<String> rewardcommands410 = new ArrayList<>();
-    public final List<String> rewardcommands11 = new ArrayList<>();
+    public final List<String> rewardCommands1 = new ArrayList<>();
+    public final List<String> rewardCommands2 = new ArrayList<>();
+    public final List<String> rewardCommands3 = new ArrayList<>();
+    public final List<String> rewardCommands410 = new ArrayList<>();
+    public final List<String> rewardCommands11 = new ArrayList<>();
 
     public AMEReward(String path)
     {
@@ -28,7 +28,7 @@ public class AMEReward
         {
             if (cfg.getString("rewards.1."+count) != null)
             {
-                rewardcommands1.add(cfg.getString("rewards.1."+count));
+                rewardCommands1.add(cfg.getString("rewards.1."+count));
             }
             else
             {
@@ -42,7 +42,7 @@ public class AMEReward
         {
             if (cfg.getString("rewards.2."+count) != null)
             {
-                rewardcommands2.add(cfg.getString("rewards.2."+count));
+                rewardCommands2.add(cfg.getString("rewards.2."+count));
             }
             else
             {
@@ -56,7 +56,7 @@ public class AMEReward
         {
             if (cfg.getString("rewards.3."+count) != null)
             {
-                rewardcommands3.add(cfg.getString("rewards.3."+count));
+                rewardCommands3.add(cfg.getString("rewards.3."+count));
             }
             else
             {
@@ -70,7 +70,7 @@ public class AMEReward
         {
             if (cfg.getString("rewards.410."+count) != null)
             {
-                rewardcommands410.add(cfg.getString("rewards.410."+count));
+                rewardCommands410.add(cfg.getString("rewards.410."+count));
             }
             else
             {
@@ -84,7 +84,7 @@ public class AMEReward
         {
             if (cfg.getString("rewards.11."+count) != null)
             {
-                rewardcommands11.add(cfg.getString("rewards.11."+count));
+                rewardCommands11.add(cfg.getString("rewards.11."+count));
             }
             else
             {

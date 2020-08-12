@@ -22,58 +22,58 @@ public class LanguageManager
 
     public String rewardBagName;
 
-    public String starttext;
+    public String startText;
 
-    public String eventduration;
+    public String eventDuration;
 
-    public String progresstext;
+    public String progressText;
 
-    public String eventendtext;
+    public String eventEndText;
 
-    public String eventminleft;
+    public String eventMinLeft;
 
-    public String eventgetrewardtext;
+    public String eventGetRewardText;
 
-    public String eventgetplacetext;
+    public String eventGetPlaceText;
 
-    public String eventwinneris;
+    public String eventWinnerIs;
 
-    public String  rewardBagNamelore1;
+    public String rewardBagNameLore1;
 
-    public String toplist;
+    public String topList;
 
-    public String  eventtoplistlink;
+    public String eventTopListLink;
 
-    public String[] toplistplaces = new String[10];
+    public String[] topListPlaces = new String[10];
 
-    public String mintext;
+    public String minText;
 
-    public String sectext;
+    public String secText;
 
-    public String noeventrunning;
+    public String noEventRunning;
 
     public void loadLang()
     {
         File configFile = new File("plugins" + File.separator + AME.getInstance().getName() + File.separator + AME.getInstance().getConfig().getString("general.lang") + ".yml");
         FileConfiguration cfg = YamlConfiguration.loadConfiguration(configFile);
         rewardBagName = cfg.getString("rewardBagName") != null ? cfg.getString("rewardBagName") : "Reward bag";
-        starttext  = cfg.getString("starttext") != null ? cfg.getString("starttext") : "started!";
-        eventduration = cfg.getString("eventduration") != null ? cfg.getString("eventduration") : "Event duration:";
-        progresstext = cfg.getString("progresstext") != null ? cfg.getString("progresstext") : "Score:";
-        eventendtext = cfg.getString("eventendtext") != null ? cfg.getString("eventendtext") : "is finished!";
-        eventminleft = cfg.getString("eventminleft") != null ? cfg.getString("eventminleft") : "Event ends in:";
-        eventgetrewardtext = cfg.getString("eventgetrewardtext") != null ? cfg.getString("eventgetrewardtext") : "Your reward is:";
-        eventgetplacetext = cfg.getString("eventgetplacetext") != null ? cfg.getString("eventgetplacetext") : "Your rank in the event was:";
-        eventwinneris = cfg.getString("eventwinneris") != null ? cfg.getString("eventwinneris") : "1st place is:";
-        rewardBagNamelore1 = cfg.getString("rewardBagNamelore1") != null ? cfg.getString("rewardBagNamelore1") : "&0Item: Reward bag";
-        toplist = cfg.getString("toplist") != null ? cfg.getString("toplist") : "Toplist";
-        eventtoplistlink = cfg.getString("eventtoplistlink") != null ? cfg.getString("eventtoplistlink") : "Show toplist";
-        mintext = cfg.getString("mintext") != null ? cfg.getString("mintext") : "min";
-        sectext = cfg.getString("sectext") != null ? cfg.getString("sectext") : "sec";
-        noeventrunning = cfg.getString("noeventrunning") != null ? cfg.getString("noeventrunning") : "no event active";
-        for (int i = 0; i < toplistplaces.length; i++)
+        startText = cfg.getString("starttext") != null ? cfg.getString("starttext") : "started!";
+        eventDuration = cfg.getString("eventduration") != null ? cfg.getString("eventduration") : "Event duration:";
+        progressText = cfg.getString("progresstext") != null ? cfg.getString("progresstext") : "Score:";
+        eventEndText = cfg.getString("eventendtext") != null ? cfg.getString("eventendtext") : "is finished!";
+        eventMinLeft = cfg.getString("eventminleft") != null ? cfg.getString("eventminleft") : "Event ends in:";
+        eventGetRewardText = cfg.getString("eventgetrewardtext") != null ? cfg.getString("eventgetrewardtext") : "Your reward is:";
+        eventGetPlaceText = cfg.getString("eventgetplacetext") != null ? cfg.getString("eventgetplacetext") : "Your rank in the event was:";
+        eventWinnerIs = cfg.getString("eventwinneris") != null ? cfg.getString("eventwinneris") : "1st place is:";
+        rewardBagNameLore1 = cfg.getString("rewardBagNamelore1") != null ? cfg.getString("rewardBagNamelore1") : "&0Item: Reward bag";
+        topList = cfg.getString("toplist") != null ? cfg.getString("toplist") : "Toplist";
+        eventTopListLink = cfg.getString("eventtoplistlink") != null ? cfg.getString("eventtoplistlink") : "Show toplist";
+        minText = cfg.getString("mintext") != null ? cfg.getString("mintext") : "min";
+        secText = cfg.getString("sectext") != null ? cfg.getString("sectext") : "sec";
+        noEventRunning = cfg.getString("noeventrunning") != null ? cfg.getString("noeventrunning") : "no event active";
+        for (int i = 0; i < topListPlaces.length; i++)
         {
-            toplistplaces[i] = cfg.getString("toplistplace"+(i+1)) != null ? cfg.getString("toplistplace"+(i+1)) : "#1";
+            topListPlaces[i] = cfg.getString("toplistplace"+(i+1)) != null ? cfg.getString("toplistplace"+(i+1)) : "#"+(+i+1);
         }
     }
 }

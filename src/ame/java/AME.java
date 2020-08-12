@@ -17,6 +17,8 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
+
 public class AME extends JavaPlugin
 {
     static AME instance;
@@ -24,7 +26,6 @@ public class AME extends JavaPlugin
     public void onEnable()
     {
         instance = this;
-        new ConfigManager();
         new LanguageManager();
 
         ConfigManager.loadConfig();
@@ -33,29 +34,30 @@ public class AME extends JavaPlugin
         Bukkit.getLogger().info("[AME] register commands!");
         regCommands();
         Bukkit.getLogger().info("[AME] commands registered!");
+
         Bukkit.getLogger().info("[AME] load events!");
         new AMEEventManager();
-        new AMERewardManager();
         AMEEventManager.getInstance().initEvents();
-        AMERewardManager.getInstance().loadRewards();
+        AMERewardManager.loadRewards();
         Bukkit.getLogger().info("[AME] events loaded!");
-        regEvents();
+        regListener();
         Bukkit.getLogger().info("[AME] has been enabled!");
         if (getConfig().getBoolean("general.active"))
         {
+            Bukkit.getLogger().info("[AME] Event timer started !");
             AMEEventManager.getInstance().startTimer();
         }
     }
 
     private void regCommands()
     {
-        this.getCommand("amereload").setExecutor(new CommandReloadEvent());
-        this.getCommand("amestartevent").setExecutor(new CommandStartEvent());
-        this.getCommand("ametl").setExecutor(new CommandLastTopList());
-        this.getCommand("ameshow").setExecutor(new CommandShowEvent());
+        Objects.requireNonNull(this.getCommand("amereload")).setExecutor(new CommandReloadEvent());
+        Objects.requireNonNull(this.getCommand("amestartevent")).setExecutor(new CommandStartEvent());
+        Objects.requireNonNull(this.getCommand("ametl")).setExecutor(new CommandLastTopList());
+        Objects.requireNonNull(this.getCommand("ameshow")).setExecutor(new CommandShowEvent());
     }
 
-    private void regEvents()
+    private void regListener()
     {
         PluginManager pm = getServer().getPluginManager();
         pm.registerEvents(new OnEntityDeath(), this);

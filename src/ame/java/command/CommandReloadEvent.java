@@ -22,10 +22,10 @@ public class CommandReloadEvent implements CommandExecutor
             }
             else
             {
-                if (!AMEEventManager.getInstance().eventactive)
+                if (!AMEEventManager.getInstance().eventActive)
                 {
                     AMEEventManager.getInstance().initEvents();
-                    AMERewardManager.getInstance().loadRewards();
+                    AMERewardManager.loadRewards();
                     LanguageManager.getInstance().loadLang();
                     player.sendMessage("Reloaded AME Events!");
                 }
