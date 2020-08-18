@@ -20,24 +20,20 @@ public class CommandStartEvent implements CommandExecutor
             {
                 return false;
             }
-            else
-            {
-                if (args.length > 0)
-                {
-                    StringBuilder value = new StringBuilder();
-                    for (String v: args)
-                    {
-                        value.append(v);
-                    }
-                    Bukkit.getScheduler().runTask(AME.getInstance(),()-> AMEEventManager.getInstance().startEvent(value.toString()));
-                }
-                else
-                {
-                    Bukkit.getScheduler().runTask(AME.getInstance(),()-> AMEEventManager.getInstance().startEvent());
-                }
-                return true;
-            }
         }
-        return false;
+        if (args.length > 0)
+        {
+            StringBuilder value = new StringBuilder();
+            for (String v: args)
+            {
+                value.append(v);
+            }
+            Bukkit.getScheduler().runTask(AME.getInstance(),()-> AMEEventManager.getInstance().startEvent(value.toString()));
+        }
+        else
+        {
+            Bukkit.getScheduler().runTask(AME.getInstance(),()-> AMEEventManager.getInstance().startEvent());
+        }
+        return true;
     }
 }
