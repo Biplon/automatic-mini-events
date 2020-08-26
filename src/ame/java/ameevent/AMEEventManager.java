@@ -117,7 +117,10 @@ public class AMEEventManager
             else
             {
                 Bukkit.getScheduler().cancelTask(autoEventTask);
-                startTimer();
+                if (AME.getInstance().getConfig().getBoolean("general.active"))
+                {
+                    startTimer();
+                }
             }
         }
     }
