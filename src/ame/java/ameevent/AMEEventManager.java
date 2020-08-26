@@ -220,9 +220,10 @@ public class AMEEventManager
             {
                 for (EventPlayer u :  activeEvent.count)
                 {
-                    if (u.getPlayer().isOnline())
+                    Player p = Bukkit.getPlayer(u.getPlayer());
+                    if (p !=null &&  p.isOnline())
                     {
-                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", (activeEvent.time / 2) * 60 + ""), u.getPlayer());
+                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", (activeEvent.time / 2) * 60 + ""), Objects.requireNonNull(Bukkit.getPlayer(u.getPlayer())));
                     }
                 }
             }, (long) (e.time * 60 / 2) * 20, (long) (e.time * 60 / 2) * 20);
@@ -234,9 +235,10 @@ public class AMEEventManager
                 timeLeft -= remainingTimeLoop;
                 for (EventPlayer u :  activeEvent.count)
                 {
-                    if (u.getPlayer().isOnline())
+                    Player p = Bukkit.getPlayer(u.getPlayer());
+                    if (p !=null &&  p.isOnline())
                     {
-                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(timeLeft)), u.getPlayer());
+                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(timeLeft)), Objects.requireNonNull(Bukkit.getPlayer(u.getPlayer())));
                     }
                 }
             }, (long) remainingTimeLoop * 20, (long) remainingTimeLoop * 20);
@@ -245,9 +247,10 @@ public class AMEEventManager
             {
                 for (EventPlayer u :  activeEvent.count)
                 {
-                    if (u.getPlayer().isOnline())
+                    Player p = Bukkit.getPlayer(u.getPlayer());
+                    if (p !=null &&  p.isOnline())
                     {
-                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(60)), u.getPlayer());
+                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(60)), Objects.requireNonNull(Bukkit.getPlayer(u.getPlayer())));
                     }
                 }
             }, (long) (timeLeft -60) * 20);
@@ -259,12 +262,13 @@ public class AMEEventManager
         Bukkit.getScheduler().cancelTask(timerTask);
         for (EventPlayer u :  activeEvent.count)
         {
-            if (u.getPlayer().isOnline())
+            Player p = Bukkit.getPlayer(u.getPlayer());
+            if (p !=null && p.isOnline())
             {
-                sendMessage(LanguageManager.getInstance().eventEndText, u.getPlayer());
+                sendMessage(LanguageManager.getInstance().eventEndText, p);
             }
         }
-        Player[] list= sortByValues();
+        String[] list= sortByValues();
         Arrays.fill(topList, "---");
         if (list.length > 0)
         {
@@ -272,7 +276,11 @@ public class AMEEventManager
             {
                 if (list.length > i)
                 {
-                    topList[i] = list[i].getName();
+                    Player p = Bukkit.getPlayer(list[i]);
+                    if (p !=null)
+                    {
+                        topList[i] =  p.getName();
+                    }
                 }
                 else
                 {
@@ -418,7 +426,7 @@ public class AMEEventManager
     {
         for (EventPlayer u :  activeEvent.count)
         {
-            if (u.getPlayer().getUniqueId() == p.getUniqueId())
+            if (u.getPlayer().equals(p.getName()))
             {
                 return true;
             }
@@ -428,14 +436,14 @@ public class AMEEventManager
 
     public void addPlayerToEvent(Player p,int value)
     {
-        activeEvent.count.add(new EventPlayer(p,value));
+        activeEvent.count.add(new EventPlayer(p.getName(),value));
     }
 
     public void increasePlayerCount(Player p,int value)
     {
         for (EventPlayer u : activeEvent.count)
         {
-            if (u.getPlayer().getUniqueId() == p.getUniqueId())
+            if (u.getPlayer().equals(p.getName()))
             {
                 u.addCount(value);
             }
@@ -446,7 +454,7 @@ public class AMEEventManager
     {
         for (EventPlayer u :  activeEvent.count)
         {
-            if (u.getPlayer().getUniqueId() == p.getUniqueId())
+            if (u.getPlayer().equals(p.getName()))
             {
                 return u.getCount();
             }
@@ -454,7 +462,7 @@ public class AMEEventManager
         return 0;
     }
 
-    public Player[] sortByValues()
+    public String[] sortByValues()
     {
         EventPlayer[] newValues = new EventPlayer[activeEvent.count.size()];
         for (int i = 0; i < newValues.length; i++)
@@ -462,7 +470,7 @@ public class AMEEventManager
             newValues[i] = getTop();
             activeEvent.count.remove(newValues[i]);
         }
-        Player[] tmp = new Player[newValues.length];
+        String[] tmp = new String[newValues.length];
         for (int i = 0; i < tmp.length; i++)
         {
             tmp[i] = newValues[i].getPlayer();

@@ -1,14 +1,12 @@
 package ame.java.Struct;
 
-import org.bukkit.entity.Player;
-
 public class EventPlayer
 {
-    private Player p;
+    private String p;
 
     private int count;
 
-    public EventPlayer(Player p, int count)
+    public EventPlayer(String p, int count)
     {
         this.p = p;
         this.count = count;
@@ -19,7 +17,7 @@ public class EventPlayer
         this.count += count;
     }
 
-    public Player getPlayer()
+    public String getPlayer()
     {
         return p;
     }

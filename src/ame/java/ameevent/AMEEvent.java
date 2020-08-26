@@ -110,18 +110,33 @@ public class AMEEvent
         }
     }
 
-    public void getPlayerRewards(Player[] player)
+    public void getPlayerRewards(String[] p)
     {
-        Map<Integer, ItemStack> map;
+        Map<Integer, ItemStack> map = null;
+        Player[] player = new Player[p.length];
+        for (int i = 0; i < player.length; i++)
+        {
+            player[i] = Bukkit.getPlayer(p[i]);
+        }
         for (int i = 0; i < player.length; i++)
         {
             if (i == 0)
             {
-                map = player[i].getInventory().addItem(rewards[i]);
+                if (player[i] != null)
+                {
+                    map = player[i].getInventory().addItem(rewards[i]);
+                }
                 TextComponent message = new TextComponent(LanguageManager.getInstance().eventTopListLink);
                 message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ametl"));
                 ComponentBuilder tmp = new ComponentBuilder();
-                tmp.append( AMEEventManager.getInstance().replaceEventPlaceHolder(LanguageManager.getInstance().eventWinnerIs).replace("%p1%",player[i].getName()).replace("%toplist%",""));
+                if (player[i] != null)
+                {
+                    tmp.append( AMEEventManager.getInstance().replaceEventPlaceHolder(LanguageManager.getInstance().eventWinnerIs).replace("%p1%",player[i].getName()).replace("%toplist%",""));
+                }
+                else
+                {
+                    tmp.append( AMEEventManager.getInstance().replaceEventPlaceHolder(LanguageManager.getInstance().eventWinnerIs).replace("%p1%","---").replace("%toplist%",""));
+                }
                 tmp.append(message);
                 for (Object pl: player)
                 {
@@ -133,27 +148,45 @@ public class AMEEvent
             }
             else if (i == 1)
             {
-                map = player[i].getInventory().addItem(rewards[i]);
+                if (player[i] != null)
+                {
+                    map = player[i].getInventory().addItem(rewards[i]);
+                }
             }
             else if (i == 2)
             {
-                map = player[i].getInventory().addItem(rewards[i]);
+                if (player[i] != null)
+                {
+                    map = player[i].getInventory().addItem(rewards[i]);
+                }
             }
             else if (i < 10)
             {
-                map = player[i].getInventory().addItem(rewards[3]);
+                if (player[i] != null)
+                {
+                    map = player[i].getInventory().addItem(rewards[3]);
+                }
             }
             else
             {
-                map = player[i].getInventory().addItem(rewards[4]);
+                if (player[i] != null)
+                {
+                    map = player[i].getInventory().addItem(rewards[4]);
+                }
             }
-            AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventGetPlaceText + " "+ (i +1), player[i]);
-            AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventGetRewardText + " "+ LanguageManager.getInstance().rewardBagName ,player[i]);
-            if (map.size() == 1)
+            if (player[i] != null)
+            {
+                AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventGetPlaceText + " " + (i + 1), player[i]);
+                AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventGetRewardText + " " + LanguageManager.getInstance().rewardBagName, player[i]);
+            }
+            if (map !=null && map.size() == 1)
             {
                 for (final ItemStack item : map.values())
                 {
-                    player[i].getWorld().dropItemNaturally(player[i].getLocation(), item);
+                    if (player[i] != null)
+                    {
+                        player[i].getWorld().dropItemNaturally(player[i].getLocation(), item);
+                    }
                 }
                 map.clear();
             }
