@@ -1,5 +1,6 @@
 package ame.java.ameevent;
 
+import ame.java.Struct.EventPlayer;
 import ame.java.lang.LanguageManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -31,7 +32,7 @@ public class AMEEvent
 
     public List<EntityType> countEntities = new ArrayList<>();
 
-    public HashMap<Player, Integer> count = new HashMap<>();
+    public List<EventPlayer> count = new ArrayList<>();
 
     public ItemStack[] rewards = new ItemStack[5];
 
@@ -109,21 +110,20 @@ public class AMEEvent
         }
     }
 
-    public void getPlayerRewards(HashMap<Player, Integer> player)
+    public void getPlayerRewards(Player[] player)
     {
         Map<Integer, ItemStack> map;
-        Object[] p = player.keySet().toArray();
-        for (int i = 0; i < p.length; i++)
+        for (int i = 0; i < player.length; i++)
         {
             if (i == 0)
             {
-                map = ((Player) p[i]).getInventory().addItem(rewards[i]);
+                map = player[i].getInventory().addItem(rewards[i]);
                 TextComponent message = new TextComponent(LanguageManager.getInstance().eventTopListLink);
                 message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ametl"));
                 ComponentBuilder tmp = new ComponentBuilder();
-                tmp.append( AMEEventManager.getInstance().replaceEventPlaceHolder(LanguageManager.getInstance().eventWinnerIs).replace("%p1%",((Player) p[i]).getName()).replace("%toplist%",""));
+                tmp.append( AMEEventManager.getInstance().replaceEventPlaceHolder(LanguageManager.getInstance().eventWinnerIs).replace("%p1%",player[i].getName()).replace("%toplist%",""));
                 tmp.append(message);
-                for (Object pl: p)
+                for (Object pl: player)
                 {
                     if (pl != null)
                     {
@@ -133,27 +133,27 @@ public class AMEEvent
             }
             else if (i == 1)
             {
-                map = ((Player) p[i]).getInventory().addItem(rewards[i]);
+                map = player[i].getInventory().addItem(rewards[i]);
             }
             else if (i == 2)
             {
-                map = ((Player) p[i]).getInventory().addItem(rewards[i]);
+                map = player[i].getInventory().addItem(rewards[i]);
             }
             else if (i < 10)
             {
-                map = ((Player) p[i]).getInventory().addItem(rewards[3]);
+                map = player[i].getInventory().addItem(rewards[3]);
             }
             else
             {
-                map = ((Player) p[i]).getInventory().addItem(rewards[4]);
+                map = player[i].getInventory().addItem(rewards[4]);
             }
-            AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventGetPlaceText + " "+ (i +1), ((Player) p[i]));
-            AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventGetRewardText + " "+ LanguageManager.getInstance().rewardBagName ,((Player) p[i]));
+            AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventGetPlaceText + " "+ (i +1), player[i]);
+            AMEEventManager.getInstance().sendMessage(LanguageManager.getInstance().eventGetRewardText + " "+ LanguageManager.getInstance().rewardBagName ,player[i]);
             if (map.size() == 1)
             {
                 for (final ItemStack item : map.values())
                 {
-                    ((Player) p[i]).getWorld().dropItemNaturally(((Player) p[i]).getLocation(), item);
+                    player[i].getWorld().dropItemNaturally(player[i].getLocation(), item);
                 }
                 map.clear();
             }

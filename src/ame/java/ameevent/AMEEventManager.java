@@ -1,6 +1,7 @@
 package ame.java.ameevent;
 
 import ame.java.AME;
+import ame.java.Struct.EventPlayer;
 import ame.java.config.EventConfigLoader;
 import ame.java.lang.LanguageManager;
 import net.md_5.bungee.api.ChatMessageType;
@@ -217,11 +218,11 @@ public class AMEEventManager
         {
             timerTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(AME.getInstance(), () ->
             {
-                for (Player u :  activeEvent.count.keySet())
+                for (EventPlayer u :  activeEvent.count)
                 {
-                    if (u.isOnline())
+                    if (u.getPlayer().isOnline())
                     {
-                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", (activeEvent.time / 2) * 60 + ""), u);
+                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", (activeEvent.time / 2) * 60 + ""), u.getPlayer());
                     }
                 }
             }, (long) (e.time * 60 / 2) * 20, (long) (e.time * 60 / 2) * 20);
@@ -231,22 +232,22 @@ public class AMEEventManager
             timerTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(AME.getInstance(), () ->
             {
                 timeLeft -= remainingTimeLoop;
-                for (Player u :  activeEvent.count.keySet())
+                for (EventPlayer u :  activeEvent.count)
                 {
-                    if (u.isOnline())
+                    if (u.getPlayer().isOnline())
                     {
-                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(timeLeft)), u);
+                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(timeLeft)), u.getPlayer());
                     }
                 }
             }, (long) remainingTimeLoop * 20, (long) remainingTimeLoop * 20);
 
             Bukkit.getScheduler().runTaskLater(AME.getInstance(), () ->
             {
-                for (Player u :  activeEvent.count.keySet())
+                for (EventPlayer u :  activeEvent.count)
                 {
-                    if (u.isOnline())
+                    if (u.getPlayer().isOnline())
                     {
-                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(60)), u);
+                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(60)), u.getPlayer());
                     }
                 }
             }, (long) (timeLeft -60) * 20);
@@ -256,32 +257,28 @@ public class AMEEventManager
     public void stopEvent()
     {
         Bukkit.getScheduler().cancelTask(timerTask);
-        for (Player u :  activeEvent.count.keySet())
+        for (EventPlayer u :  activeEvent.count)
         {
-            if (u.isOnline())
+            if (u.getPlayer().isOnline())
             {
-                sendMessage(LanguageManager.getInstance().eventEndText, u);
+                sendMessage(LanguageManager.getInstance().eventEndText, u.getPlayer());
             }
         }
-        HashMap<Player, Integer> list = sortByValues(activeEvent.count);
-        if (list.size() > 0)
+        Player[] list= sortByValues();
+        Arrays.fill(topList, "---");
+        if (list.length > 0)
         {
-            Object[] p = list.keySet().toArray();
             for (int i = 0; i < 10; i++)
             {
-                if (p.length > i)
+                if (list.length > i)
                 {
-                    topList[i] = ((Player) p[i]).getName();
+                    topList[i] = list[i].getName();
                 }
                 else
                 {
                     topList[i] = "---";
                 }
             }
-        }
-        else
-        {
-            Arrays.fill(topList, "---");
         }
         activeEvent.getPlayerRewards(list);
         activeEvent.count.clear();
@@ -292,21 +289,6 @@ public class AMEEventManager
         {
             startTimer();
         }
-    }
-
-    private static HashMap sortByValues(HashMap map)
-    {
-        List list = new LinkedList(map.entrySet());
-
-        Collections.sort(list, (Comparator) (o1, o2) -> ((Comparable) ((Map.Entry) (o1)).getValue()).compareTo(((Map.Entry) (o2)).getValue()));
-
-        HashMap sortedHashMap = new LinkedHashMap();
-        for (Iterator it = list.iterator(); it.hasNext(); )
-        {
-            Map.Entry entry = (Map.Entry) it.next();
-            sortedHashMap.put(entry.getKey(), entry.getValue());
-        }
-        return sortedHashMap;
     }
 
     String replaceEventPlaceHolder(String msg)
@@ -325,15 +307,15 @@ public class AMEEventManager
     {
         if (activeEvent.countEntities.contains(typ))
         {
-            if (activeEvent.count.containsKey(p))
+            if (isInList(p))
             {
-                activeEvent.count.put(p, activeEvent.count.get(p) + value);
+                increasePlayerCount(p,value);
             }
             else
             {
-                activeEvent.count.put(p, value);
+                addPlayerToEvent(p,value);
             }
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progressText) + "" + activeEvent.count.get(p)));
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progressText) + "" + getPlayerCount(p)));
         }
     }
 
@@ -341,29 +323,29 @@ public class AMEEventManager
     {
         if (activeEvent.countBlocks.contains(typ))
         {
-            if (activeEvent.count.containsKey(p))
+            if (isInList(p))
             {
-                activeEvent.count.put(p, activeEvent.count.get(p) + value);
+                increasePlayerCount(p,value);
             }
             else
             {
-                activeEvent.count.put(p, value);
+                addPlayerToEvent(p,value);
             }
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progressText) + "" + activeEvent.count.get(p)));
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progressText) + "" + getPlayerCount(p)));
         }
     }
 
     public void addCountFishEvent(Player p, int value)
     {
-        if (activeEvent.count.containsKey(p))
+        if (isInList(p))
         {
-            activeEvent.count.put(p, activeEvent.count.get(p) + value);
+            increasePlayerCount(p,value);
         }
         else
         {
-            activeEvent.count.put(p, value);
+            addPlayerToEvent(p,value);
         }
-        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progressText) + "" + activeEvent.count.get(p)));
+        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(replaceEventPlaceHolder(LanguageManager.getInstance().progressText) + "" + getPlayerCount(p)));
     }
 
     public EventTyp getEventType()
@@ -429,5 +411,77 @@ public class AMEEventManager
         {
             sendMessage(LanguageManager.getInstance().noEventRunning,player);
         }
+    }
+
+
+    public boolean isInList(Player p)
+    {
+        for (EventPlayer u :  activeEvent.count)
+        {
+            if (u.getPlayer().getUniqueId() == p.getUniqueId())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void addPlayerToEvent(Player p,int value)
+    {
+        activeEvent.count.add(new EventPlayer(p,value));
+    }
+
+    public void increasePlayerCount(Player p,int value)
+    {
+        for (EventPlayer u : activeEvent.count)
+        {
+            if (u.getPlayer().getUniqueId() == p.getUniqueId())
+            {
+                u.addCount(value);
+            }
+        }
+    }
+
+    public int getPlayerCount(Player p)
+    {
+        for (EventPlayer u :  activeEvent.count)
+        {
+            if (u.getPlayer().getUniqueId() == p.getUniqueId())
+            {
+                return u.getCount();
+            }
+        }
+        return 0;
+    }
+
+    public Player[] sortByValues()
+    {
+        EventPlayer[] newValues = new EventPlayer[activeEvent.count.size()];
+        for (int i = 0; i < newValues.length; i++)
+        {
+            newValues[i] = getTop();
+            activeEvent.count.remove(newValues[i]);
+        }
+        Player[] tmp = new Player[newValues.length];
+        for (int i = 0; i < tmp.length; i++)
+        {
+            tmp[i] = newValues[i].getPlayer();
+        }
+        return tmp;
+    }
+
+    private EventPlayer getTop()
+    {
+        int value = 0;
+        EventPlayer pv = null;
+        for (EventPlayer p:activeEvent.count)
+        {
+            if (p.getCount() > value)
+            {
+                pv = p;
+                value = p.getCount();
+            }
+        }
+        return pv;
     }
 }
