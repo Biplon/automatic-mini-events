@@ -55,8 +55,6 @@ public class AMEEventManager
     private double remainingTimeLoop;
 
     private double timeLeft;
-    
-    private final String[] topList = new String[10];
 
     public void initEvents()
     {
@@ -70,7 +68,6 @@ public class AMEEventManager
         eventMinPlayer = AME.getInstance().getConfig().getBoolean("general.eventminplayer");
         remainingTimeLoop = AME.getInstance().getConfig().getDouble("general.remainingtimeloop");
         lastEvent = aMEEvents[0];
-        Arrays.fill(topList, "---");
     }
 
     public static ItemStack createItem(final Material material, final String name, final String... lore)
@@ -269,25 +266,6 @@ public class AMEEventManager
             }
         }
         String[] list= sortByValues();
-        Arrays.fill(topList, "---");
-        if (list.length > 0)
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                if (list.length > i)
-                {
-                    Player p = Bukkit.getPlayer(list[i]);
-                    if (p !=null)
-                    {
-                        topList[i] =  p.getName();
-                    }
-                }
-                else
-                {
-                    topList[i] = "---";
-                }
-            }
-        }
         activeEvent.getPlayerRewards(list);
         activeEvent.count.clear();
         lastEvent = activeEvent;
@@ -366,18 +344,6 @@ public class AMEEventManager
         Random r = new Random();
         int randomNumber = r.nextInt(maxTime - minTime) + minTime;
         autoEventTask = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(AME.getInstance(), this::startEvent, ((randomNumber * 60) * 20));
-    }
-
-    public void getTopList(Player player)
-    {
-        for (String t : LanguageManager.getInstance().topList.replace("%eventname%", lastEvent.name).split("/n"))
-        {
-            player.sendMessage(t);
-        }
-        for (int i = 0; i < 10; i++)
-        {
-            player.sendMessage(LanguageManager.getInstance().topListPlaces[i].replace("%p" + (i + 1) + "%", topList[i]));
-        }
     }
 
     public void sendMessage(String msg, Player p)

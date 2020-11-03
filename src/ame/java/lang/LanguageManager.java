@@ -40,12 +40,6 @@ public class LanguageManager
 
     public String rewardBagNameLore1;
 
-    public String topList;
-
-    public String eventTopListLink;
-
-    public String[] topListPlaces = new String[10];
-
     public String minText;
 
     public String secText;
@@ -66,14 +60,8 @@ public class LanguageManager
         eventGetPlaceText = cfg.getString("eventgetplacetext") != null ? cfg.getString("eventgetplacetext") : "Your rank in the event was:";
         eventWinnerIs = cfg.getString("eventwinneris") != null ? cfg.getString("eventwinneris") : "1st place is:";
         rewardBagNameLore1 = cfg.getString("rewardBagNamelore1") != null ? cfg.getString("rewardBagNamelore1") : "&0Item: Reward bag";
-        topList = cfg.getString("toplist") != null ? cfg.getString("toplist") : "Toplist";
-        eventTopListLink = cfg.getString("eventtoplistlink") != null ? cfg.getString("eventtoplistlink") : "Show toplist";
         minText = cfg.getString("mintext") != null ? cfg.getString("mintext") : "min";
         secText = cfg.getString("sectext") != null ? cfg.getString("sectext") : "sec";
         noEventRunning = cfg.getString("noeventrunning") != null ? cfg.getString("noeventrunning") : "no event active";
-        for (int i = 0; i < topListPlaces.length; i++)
-        {
-            topListPlaces[i] = cfg.getString("toplistplace"+(i+1)) != null ? cfg.getString("toplistplace"+(i+1)) : "#"+(+i+1);
-        }
     }
 }

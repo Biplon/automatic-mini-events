@@ -126,8 +126,6 @@ public class AMEEvent
                 {
                     map = player[i].getInventory().addItem(rewards[i]);
                 }
-                TextComponent message = new TextComponent(LanguageManager.getInstance().eventTopListLink);
-                message.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/ametl"));
                 ComponentBuilder tmp = new ComponentBuilder();
                 if (player[i] != null)
                 {
@@ -137,7 +135,6 @@ public class AMEEvent
                 {
                     tmp.append( AMEEventManager.getInstance().replaceEventPlaceHolder(LanguageManager.getInstance().eventWinnerIs).replace("%p1%","---").replace("%toplist%",""));
                 }
-                tmp.append(message);
                 for (Object pl: player)
                 {
                     if (pl != null)

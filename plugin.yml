@@ -1,8 +1,8 @@
 name: AME
 author: Vestri
 description: ame
-version: 0.20
-api-version: 1.15
+version: 0.22
+api-version: 1.16
 main: ame.java.AME
 permissions:
   ame.admin:
@@ -15,9 +15,6 @@ commands:
   amestartevent:
     description: start event
     usage: /amestartevent [eventname]
-  ametl:
-    description: start event
-    usage: /ametl
   ameshow:
     description: show active event
     usage: /ameshow
