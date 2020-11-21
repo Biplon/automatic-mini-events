@@ -221,6 +221,7 @@ public class AMEEventManager
                     if (p !=null &&  p.isOnline())
                     {
                         sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", (activeEvent.time / 2) * 60 + ""), Objects.requireNonNull(Bukkit.getPlayer(u.getPlayer())));
+                        sendMessage("§7Deine Punktzahl: §6"+ u.getCount() +"§7!", Objects.requireNonNull(Bukkit.getPlayer(u.getPlayer())));
                     }
                 }
             }, (long) (e.time * 60 / 2) * 20, (long) (e.time * 60 / 2) * 20);
@@ -236,6 +237,7 @@ public class AMEEventManager
                     if (p !=null &&  p.isOnline())
                     {
                         sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(timeLeft)), Objects.requireNonNull(Bukkit.getPlayer(u.getPlayer())));
+                        sendMessage("§7Deine Punktzahl: §6"+ u.getCount() +"§7!", Objects.requireNonNull(Bukkit.getPlayer(u.getPlayer())));
                     }
                 }
             }, (long) remainingTimeLoop * 20, (long) remainingTimeLoop * 20);
@@ -247,7 +249,8 @@ public class AMEEventManager
                     Player p = Bukkit.getPlayer(u.getPlayer());
                     if (p !=null &&  p.isOnline())
                     {
-                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(60)), Objects.requireNonNull(Bukkit.getPlayer(u.getPlayer())));
+                        sendMessage(LanguageManager.getInstance().eventMinLeft.replace("%timeleft%", getTimeString(60)) , Objects.requireNonNull(Bukkit.getPlayer(u.getPlayer())));
+                        sendMessage("§7Deine Punktzahl: §6"+ u.getCount() +"§7!", Objects.requireNonNull(Bukkit.getPlayer(u.getPlayer())));
                     }
                 }
             }, (long) (timeLeft -60) * 20);

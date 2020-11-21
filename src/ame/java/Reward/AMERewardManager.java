@@ -46,31 +46,66 @@ public class AMERewardManager
                     case "1":
                         for (String co : re.rewardCommands1)
                         {
-                            executeCommand(co,p);
+                            if (co.contains("nachricht"))
+                            {
+                                p.sendMessage(co.replace("nachricht",""));
+                            }
+                            else
+                            {
+                                executeCommand(co,p);
+                            }
                         }
                         return true;
                     case "2":
                         for (String co : re.rewardCommands2)
                         {
-                            executeCommand(co,p);
+                            if (co.contains("nachricht"))
+                            {
+                                p.sendMessage(co.replace("nachricht",""));
+                            }
+                            else
+                            {
+                                executeCommand(co,p);
+                            }
                         }
                         return true;
                     case "3":
                         for (String co : re.rewardCommands3)
                         {
-                            executeCommand(co,p);
+                            if (co.contains("nachricht"))
+                            {
+                                p.sendMessage(co.replace("nachricht",""));
+                            }
+                            else
+                            {
+                                executeCommand(co,p);
+                            }
                         }
                         return true;
                     case "4-10":
                         for (String co : re.rewardCommands410)
                         {
-                            executeCommand(co,p);
+                            if (co.contains("nachricht"))
+                            {
+                                p.sendMessage(co.replace("nachricht",""));
+                            }
+                            else
+                            {
+                                executeCommand(co,p);
+                            }
                         }
                         return true;
                     case ">10":
                         for (String co : re.rewardCommands11)
                         {
-                            executeCommand(co,p);
+                            if (co.contains("nachricht"))
+                            {
+                                p.sendMessage(co.replace("nachricht",""));
+                            }
+                            else
+                            {
+                                executeCommand(co,p);
+                            }
                         }
                         return true;
                 }
